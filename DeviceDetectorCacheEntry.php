@@ -7,7 +7,7 @@
  *
  */
 
-namespace Piwik\DeviceDetector;
+namespace Piwik\Plugins\DeviceDetectorCache;
 
 use DeviceDetector\DeviceDetector;
 

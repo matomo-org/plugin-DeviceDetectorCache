@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Piwik\Plugins\DevicesDetection\tests\Integration;
+namespace Piwik\Plugins\DeviceDetectorCache\tests\Integration;
 
-
-use Piwik\DeviceDetector\DeviceDetectorCacheEntry;
 use Piwik\DeviceDetector\DeviceDetectorFactory;
+use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
+use Piwik\Plugins\DeviceDetectorCache\Commands\WarmDeviceDetectorCache;
 use Piwik\Tests\Framework\TestCase\ConsoleCommandTestCase;
 
 class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
@@ -15,7 +15,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $testFile = __DIR__ . '/files/useragents1.csv';
 
         $this->applicationTester->run(array(
-            'command' => 'devicedetector:warmcache',
+            'command' => WarmDeviceDetectorCache::COMMAND_NAME,
             'input-file' => $testFile
         ));
 
@@ -36,7 +36,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $testFile = __DIR__ . '/files/notarealfile.csv';
 
         $this->applicationTester->run(array(
-            'command' => 'devicedetector:warmcache',
+            'command' => WarmDeviceDetectorCache::COMMAND_NAME,
             'input-file' => $testFile
         ));
 
@@ -48,7 +48,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $testFile = __DIR__ . '/files/useragentsnoheader.csv';
 
         $this->applicationTester->run(array(
-            'command' => 'devicedetector:warmcache',
+            'command' => WarmDeviceDetectorCache::COMMAND_NAME,
             'input-file' => $testFile,
             '--skip-header-row' => false
         ));
@@ -70,7 +70,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $testFile = __DIR__ . '/files/useragentstoignore.csv';
 
         $this->applicationTester->run(array(
-            'command' => 'devicedetector:warmcache',
+            'command' => WarmDeviceDetectorCache::COMMAND_NAME,
             'input-file' => $testFile
         ));
 
@@ -92,7 +92,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $testFile = __DIR__ . '/files/useragents1.csv';
 
         $this->applicationTester->run(array(
-            'command' => 'devicedetector:warmcache',
+            'command' => WarmDeviceDetectorCache::COMMAND_NAME,
             'input-file' => $testFile
         ));
 
@@ -107,7 +107,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $testFile = __DIR__ . '/files/useragents1.csv';
 
         $this->applicationTester->run(array(
-            'command' => 'devicedetector:warmcache',
+            'command' => WarmDeviceDetectorCache::COMMAND_NAME,
             'input-file' => $testFile,
             '--count' => 2
         ));
@@ -139,7 +139,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         DeviceDetectorFactory::clearInstancesCache();
         $deviceDetectionParsed = DeviceDetectorFactory::getInstance($userAgent, false);
 
-        $this->assertInstanceOf("\Piwik\DeviceDetector\DeviceDetectorCacheEntry", $deviceDetectionFromFile);
+        $this->assertInstanceOf("\Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry", $deviceDetectionFromFile);
         $this->assertInstanceOf("\DeviceDetector\DeviceDetector", $deviceDetectionParsed);
         $this->assertEquals($deviceDetectionParsed->getBot(), $deviceDetectionFromFile->getBot());
         $this->assertEquals($deviceDetectionParsed->getBrand(), $deviceDetectionFromFile->getBrand());

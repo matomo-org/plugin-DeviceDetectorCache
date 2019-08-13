@@ -1,17 +1,19 @@
 <?php
 
 
-namespace Piwik\Plugins\DevicesDetection\Commands;
+namespace Piwik\Plugins\DeviceDetectorCache\Commands;
 
-use Piwik\DeviceDetector\DeviceDetectorCacheEntry;
-use Piwik\DeviceDetector\DeviceDetectorFactory;
+use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
 use Piwik\Plugin\ConsoleCommand;
+use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheFactory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class WarmDeviceDetectorCache extends ConsoleCommand
 {
+    const COMMAND_NAME = 'warmcache';
+
     const OPTION_INPUT_FILE = 'input-file';
     const OPTION_SKIP_HEADER = 'skip-header-row';
     const OPTION_ROWS_TO_PROCESS = 'count';
@@ -24,7 +26,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
 
     protected function configure()
     {
-        $this->setName('devicedetector:warmcache');
+        $this->setName(self::COMMAND_NAME);
         $this->setDescription(
             'Populate the device detector cache with commonly used useragent strings, as provided in the input file.');
         $this->addArgument(self::OPTION_INPUT_FILE, InputArgument::REQUIRED, 
@@ -125,7 +127,9 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             return;
         }
 
-        $deviceDetector = DeviceDetectorFactory::getInstance($userAgentStr, false);
+        $factory = new DeviceDetectorCacheFactory();
+        $factory->setUseFileCache(false);
+        $deviceDetector = $factory->makeInstance($userAgentStr);
         $outputArray = array(
             'bot' => $deviceDetector->getBot(),
             'brand' => $deviceDetector->getBrand(),

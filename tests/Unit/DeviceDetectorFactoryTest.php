@@ -8,8 +8,9 @@
 
 namespace Piwik\Tests\Unit;
 
-use Piwik\DeviceDetector\DeviceDetectorCacheEntry;
 use Piwik\DeviceDetector\DeviceDetectorFactory;
+use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
+use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheFactory;
 
 class DeviceDetectorFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -48,8 +49,9 @@ class DeviceDetectorFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->writeFile($expected, $userAgent);
 
-        $deviceDetection = DeviceDetectorFactory::getInstance($userAgent);
-        $this->assertInstanceOf("\Piwik\DeviceDetector\DeviceDetectorCacheEntry", $deviceDetection);
+        $factory = new DeviceDetectorCacheFactory();
+        $deviceDetection = $factory->makeInstance($userAgent);
+        $this->assertInstanceOf("\Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry", $deviceDetection);
         $this->assertEquals(null, $deviceDetection->getBot());
         $this->assertEquals('Cooper', $deviceDetection->getBrand());
         $this->assertEquals($expected['client'], $deviceDetection->getClient());
@@ -78,7 +80,8 @@ class DeviceDetectorFactoryTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $deviceDetection = DeviceDetectorFactory::getInstance($userAgent);
+        $factory = new DeviceDetectorCacheFactory();
+        $deviceDetection = $factory->makeInstance($userAgent);
         $this->assertInstanceOf("\DeviceDetector\DeviceDetector", $deviceDetection);
         $this->assertEquals(null, $deviceDetection->getBot());
         $this->assertEquals('AP', $deviceDetection->getBrand());

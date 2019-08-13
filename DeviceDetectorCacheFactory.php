@@ -8,3 +8,23 @@
 
 namespace Piwik\Plugins\DeviceDetectorCache;
 
+use Piwik\DeviceDetector\DeviceDetectorFactory;
+
+class DeviceDetectorCacheFactory extends DeviceDetectorFactory
+{
+    private $useFileCache = true;
+
+    protected function getDeviceDetectionInfo($userAgent)
+    {
+        if ($this->useFileCache && DeviceDetectorCacheEntry::isCached($userAgent)) {
+            return new DeviceDetectorCacheEntry($userAgent);
+        } else {
+            return parent::getDeviceDetectionInfo($userAgent);
+        }
+    }
+
+    public function setUseFileCache($use)
+    {
+        $this->useFileCache = $use;
+    }
+}
