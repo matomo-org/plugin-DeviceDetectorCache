@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class WarmDeviceDetectorCache extends ConsoleCommand
 {
-    const COMMAND_NAME = 'warmcache';
+    const COMMAND_NAME = 'device-detector-cache:warmup';
 
     const OPTION_INPUT_FILE = 'input-file';
     const OPTION_SKIP_HEADER = 'skip-header-row';
@@ -85,6 +85,9 @@ class WarmDeviceDetectorCache extends ConsoleCommand
     private function clearCacheDirectory()
     {
         $cacheDir = DeviceDetectorCacheEntry::getCacheDir();
+        if (!file_exists($cacheDir)) {
+            return;
+        }
         $di = new \RecursiveDirectoryIterator($cacheDir, \FilesystemIterator::SKIP_DOTS);
         $ri = new \RecursiveIteratorIterator($di, \RecursiveIteratorIterator::CHILD_FIRST);
         foreach ( $ri as $file ) {
@@ -136,7 +139,6 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             return;
         }
 
-        $factory = DeviceDetectorFactory::getInstance($userAgentStr);
         $factory = new DeviceDetectorFactory();
         $deviceDetector = $factory->makeInstance($userAgentStr);
         $outputArray = array(
