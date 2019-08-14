@@ -10,4 +10,9 @@ namespace Piwik\Plugins\DeviceDetectorCache;
 
 class DeviceDetectorCache extends \Piwik\Plugin
 {
+  
+    public function isTrackerPlugin()
+    {
+        return true;
+    }
 }
