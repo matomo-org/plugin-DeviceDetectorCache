@@ -1,3 +1,4 @@
 ## Changelog
 
-Here goes the changelog text.
+3.0.0
+- Initial version
