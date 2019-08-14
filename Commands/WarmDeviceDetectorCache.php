@@ -3,9 +3,9 @@
 
 namespace Piwik\Plugins\DeviceDetectorCache\Commands;
 
+use Piwik\DeviceDetector\DeviceDetectorFactory;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
 use Piwik\Plugin\ConsoleCommand;
-use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheFactory;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,6 +17,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
     const OPTION_INPUT_FILE = 'input-file';
     const OPTION_SKIP_HEADER = 'skip-header-row';
     const OPTION_ROWS_TO_PROCESS = 'count';
+    const OPTION_CLEAR_EXISTING_CACHE = 'clear';
 
     private static $userAgentsPatternsToIgnore = array(
         '/Amazon-Route53-Health-Check-Service[.]*/'
@@ -44,11 +45,19 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             InputArgument::OPTIONAL,
             'Whether to skip the first row',
             true);
+        $this->addOption(
+            self::OPTION_CLEAR_EXISTING_CACHE,
+            null,
+            InputArgument::OPTIONAL,
+            'Whether to clear existing entries from the cache',
+            true);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->clearCacheDirectory();
+        if ($input->getOption(self::OPTION_CLEAR_EXISTING_CACHE)) {
+            $this->clearCacheDirectory();
+        }
 
         $inputFile = $this->openFile(
             $input->getArgument(self::OPTION_INPUT_FILE), 
@@ -75,7 +84,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
 
     private function clearCacheDirectory()
     {
-        $cacheDir = PIWIK_DOCUMENT_ROOT . rtrim(DeviceDetectorCacheEntry::CACHE_DIR, '/');
+        $cacheDir = DeviceDetectorCacheEntry::getCacheDir();
         $di = new \RecursiveDirectoryIterator($cacheDir, \FilesystemIterator::SKIP_DOTS);
         $ri = new \RecursiveIteratorIterator($di, \RecursiveIteratorIterator::CHILD_FIRST);
         foreach ( $ri as $file ) {
@@ -104,7 +113,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
     {
         $matches = array();
         foreach (self::$userAgentsPatternsToIgnore as $pattern) {
-            preg_match('/Amazon-Route53-Health-Check-Service[.]*/', $userAgent,   $matches);
+            preg_match($pattern, $userAgent,   $matches);
             if ($matches) {
                 return false;
             }
@@ -127,8 +136,8 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             return;
         }
 
-        $factory = new DeviceDetectorCacheFactory();
-        $factory->setUseFileCache(false);
+        $factory = DeviceDetectorFactory::getInstance($userAgentStr);
+        $factory = new DeviceDetectorFactory();
         $deviceDetector = $factory->makeInstance($userAgentStr);
         $outputArray = array(
             'bot' => $deviceDetector->getBot(),
@@ -139,7 +148,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             'os' => $deviceDetector->getOs()
         );
 
-        $outputPath = DeviceDetectorCacheEntry::getCachePath($userAgentStr);
+        $outputPath = DeviceDetectorCacheEntry::getCachePath($userAgentStr, true);
         $this->writeUserAgent($outputPath, $outputArray);
     }
 

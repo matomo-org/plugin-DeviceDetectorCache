@@ -6,6 +6,7 @@ namespace Piwik\Plugins\DeviceDetectorCache\tests\Integration;
 use Piwik\DeviceDetector\DeviceDetectorFactory;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
 use Piwik\Plugins\DeviceDetectorCache\Commands\WarmDeviceDetectorCache;
+use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheFactory;
 use Piwik\Tests\Framework\TestCase\ConsoleCommandTestCase;
 
 class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
@@ -80,15 +81,16 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $this->assertUserAgentNotWrittenToFile($userAgent);
     }
 
-    public function testClearsExistingFilesFromCache()
+    public function testClearsExistingFilesFromCacheByDefault()
     {
         $userAgent = 'Mozilla/5.0 (Linux; Android 8.0.0; SAMSUNG SM-G930F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/9.4 Chrome/67.0.3396.87 Mobile Safari/537.36';
-        $cacheFilePath = DeviceDetectorCacheEntry::getCachePath($userAgent);
+        $cacheFilePath = DeviceDetectorCacheEntry::getCachePath($userAgent, true);
+        $cacheHashDir = dirname($cacheFilePath);
 
         file_put_contents($cacheFilePath, "<?php return array();", LOCK_EX);
 
         $this->assertFileExists($cacheFilePath);
-        $this->assertFileExists(PIWIK_DOCUMENT_ROOT . DeviceDetectorCacheEntry::CACHE_DIR . 'd4');
+        $this->assertFileExists($cacheHashDir);
         $testFile = __DIR__ . '/files/useragents1.csv';
 
         $this->applicationTester->run(array(
@@ -99,7 +101,27 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         // It wasn't in the list of user agents from the CSV file so it should have been removed
         // Folder should be removed too as there's no useragents that should have been written there
         $this->assertFileNotExists($cacheFilePath);
-        $this->assertFileNotExists(PIWIK_DOCUMENT_ROOT . DeviceDetectorCacheEntry::CACHE_DIR . 'd4');
+        $this->assertFileNotExists($cacheHashDir);
+    }
+
+    public function testDoesntClearExistingFilesFromCacheWhenOptionPassed()
+    {
+        $userAgent = 'Mozilla/5.0 (Linux; Android 8.0.0; SAMSUNG SM-G930F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/9.4 Chrome/67.0.3396.87 Mobile Safari/537.36';
+        $cacheFilePath = DeviceDetectorCacheEntry::getCachePath($userAgent, true);
+        $cacheHashDir = dirname($cacheFilePath);
+
+        file_put_contents($cacheFilePath, "<?php return array('testval' => 'testresult');", LOCK_EX);
+
+        $testFile = __DIR__ . '/files/useragents1.csv';
+
+        $this->applicationTester->run(array(
+            'command' => WarmDeviceDetectorCache::COMMAND_NAME,
+            'input-file' => $testFile,
+            '--clear' => false
+        ));
+
+        $this->assertFileExists($cacheFilePath);
+        $this->assertEquals(array('testval' => 'testresult'), include($cacheFilePath));
     }
 
     public function testDoesntProcessAllRowsWhenCounterSet()
@@ -135,9 +157,12 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $this->assertFileExists($expectedFilePath);
 
         DeviceDetectorFactory::clearInstancesCache();
-        $deviceDetectionFromFile = DeviceDetectorFactory::getInstance($userAgent, true);
+        $cacheFactory = new DeviceDetectorCacheFactory();
+        $deviceDetectionFromFile = $cacheFactory->makeInstance($userAgent);
+
         DeviceDetectorFactory::clearInstancesCache();
-        $deviceDetectionParsed = DeviceDetectorFactory::getInstance($userAgent, false);
+        $parsingFactory = new DeviceDetectorFactory(); 
+        $deviceDetectionParsed = $parsingFactory->makeInstance($userAgent);
 
         $this->assertInstanceOf("\Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry", $deviceDetectionFromFile);
         $this->assertInstanceOf("\DeviceDetector\DeviceDetector", $deviceDetectionParsed);

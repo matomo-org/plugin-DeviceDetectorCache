@@ -10,10 +10,12 @@
 namespace Piwik\Plugins\DeviceDetectorCache;
 
 use DeviceDetector\DeviceDetector;
+use Piwik\Filesystem;
+use Piwik\Plugin\Manager;
 
 class DeviceDetectorCacheEntry extends DeviceDetector
 {
-    const CACHE_DIR = "/misc/useragents/";
+    const CACHE_DIR = "/cache/";
 
     public function __construct($userAgent)
     {
@@ -32,14 +34,24 @@ class DeviceDetectorCacheEntry extends DeviceDetector
         return file_exists(self::getCachePath($userAgent));
     }
 
-    public static function getCachePath($userAgent)
+    public static function getCachePath($userAgent, $createDirs = false)
     {
         $hashedUserAgent = md5($userAgent);
-        // We use hash subdirs to prevent adding too many files to the same dir
-        $hashDir = PIWIK_DOCUMENT_ROOT . self::CACHE_DIR . substr($hashedUserAgent, 0, 2);
-        if (!file_exists($hashDir)) {
-            mkdir($hashDir);
+
+        // We use hash subdirs so we don't have 1000s of files in the one dir
+        $cacheDir = self::getCacheDir();
+        $hashDir = $cacheDir . substr($hashedUserAgent, 0, 2);
+
+        if ($createDirs) {
+            file_exists($cacheDir) || Filesystem::mkdir($cacheDir);
+            file_exists($hashDir) || Filesystem::mkdir($hashDir);
         }
+
         return $hashDir . '/' . $hashedUserAgent . '.php';
+    }
+
+    public static function getCacheDir()
+    {
+        return Manager::getPluginDirectory('DeviceDetectorCache') . self::CACHE_DIR;
     }
 }
