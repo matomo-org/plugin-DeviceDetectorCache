@@ -12,12 +12,18 @@ use Piwik\DeviceDetector\DeviceDetectorFactory;
 
 class DeviceDetectorCacheFactory extends DeviceDetectorFactory
 {
-    protected function getDeviceDetectionInfo($userAgent)
+    private $cache = array();
+
+    public function makeInstance($userAgent)
     {
+        if (isset($this->cache[$userAgent])) {
+            return $this->cache[$userAgent];
+        }
         if (DeviceDetectorCacheEntry::isCached($userAgent)) {
-            return new DeviceDetectorCacheEntry($userAgent);
+            $this->cache[$userAgent] = new DeviceDetectorCacheEntry($userAgent);
+            return $this->cache[$userAgent];
         }
 
-        return parent::getDeviceDetectionInfo($userAgent);
+        return parent::makeInstance($userAgent);
     }
 }

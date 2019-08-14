@@ -1,6 +1,6 @@
 {
   "name": "DeviceDetectorCache",
-  "description": "Caches parsed device detection info on the file system for faster tracking.",
+  "description": "Makes tracking faster by detecting many devices, operating systems, bots, and browsers from a cache.",
   "version": "3.0.0",
   "theme": false,
   "require": {
