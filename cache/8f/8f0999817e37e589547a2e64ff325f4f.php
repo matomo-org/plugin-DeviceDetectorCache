@@ -1,0 +1,22 @@
+<?php return array (
+  'bot' => NULL,
+  'brand' => '',
+  'client' => 
+  array (
+    'type' => 'browser',
+    'name' => 'Internet Explorer',
+    'short_name' => 'IE',
+    'version' => '11.0',
+    'engine' => 'Trident',
+    'engine_version' => '7.0',
+  ),
+  'device' => 2,
+  'model' => '',
+  'os' => 
+  array (
+    'name' => 'Windows RT',
+    'short_name' => 'WRT',
+    'version' => '8.1',
+    'platform' => 'ARM',
+  ),
+);
