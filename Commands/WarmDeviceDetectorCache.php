@@ -8,6 +8,7 @@ use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
 use Piwik\Plugin\ConsoleCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class WarmDeviceDetectorCache extends ConsoleCommand
@@ -35,22 +36,21 @@ class WarmDeviceDetectorCache extends ConsoleCommand
         $this->addOption(
             self::OPTION_ROWS_TO_PROCESS,
             null,
-            InputArgument::OPTIONAL,
+            InputOption::VALUE_OPTIONAL,
             'Number of rows to process',
             0
         );
         $this->addOption(
             self::OPTION_SKIP_HEADER,
             null,
-            InputArgument::OPTIONAL,
+            InputOption::VALUE_OPTIONAL,
             'Whether to skip the first row',
             true);
         $this->addOption(
             self::OPTION_CLEAR_EXISTING_CACHE,
             null,
-            InputArgument::OPTIONAL,
-            'Whether to clear existing entries from the cache',
-            true);
+            InputOption::VALUE_NONE,
+            'Whether to clear existing entries from the cache');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
