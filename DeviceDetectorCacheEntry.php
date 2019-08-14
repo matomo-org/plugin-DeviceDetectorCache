@@ -43,8 +43,12 @@ class DeviceDetectorCacheEntry extends DeviceDetector
         $hashDir = $cacheDir . substr($hashedUserAgent, 0, 2);
 
         if ($createDirs) {
-            file_exists($cacheDir) || Filesystem::mkdir($cacheDir);
-            file_exists($hashDir) || Filesystem::mkdir($hashDir);
+            if (!is_dir($cacheDir)) {
+                Filesystem::mkdir($cacheDir);
+            }
+            if (!is_dir($hashDir)) {
+                Filesystem::mkdir($hashDir);
+            }
         }
 
         return $hashDir . '/' . $hashedUserAgent . '.php';

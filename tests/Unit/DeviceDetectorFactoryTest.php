@@ -95,10 +95,7 @@ class DeviceDetectorFactoryTest extends \PHPUnit_Framework_TestCase
     private function writeFile($expected, $userAgent)
     {
         $hashedUserAgent = md5($userAgent);
-        $dirToWrite = DeviceDetectorCacheEntry::getCachePath($userAgent);
-        if (!is_dir($dirToWrite)) {
-            Filesystem::mkdir($dirToWrite);
-        }
+        $dirToWrite = DeviceDetectorCacheEntry::getCachePath($userAgent, true);
         $content = "<?php return " . var_export($expected, true) . ";";
         $outputFile = $dirToWrite . '/' . $hashedUserAgent . '.php';
         $this->filesToTearDown[] = $outputFile;
