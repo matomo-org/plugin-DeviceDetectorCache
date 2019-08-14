@@ -14,6 +14,8 @@ If you have not that much traffic, the overhead might not be worth it.
 
 Note: We are caching here the user agents that are commonly used on our website. Depending on your target group the used user agents may differ and you may benefit less from this cache.
 
+Note: There is no write permission needed for the caching directory as the cached user agents are already shipped with the plugin and there are no cache entries created on demand during a tracking request.
+
 ## Developer
 
 ### Caching user agents

@@ -9,6 +9,7 @@
 namespace Piwik\Tests\Unit;
 
 use Piwik\DeviceDetector\DeviceDetectorFactory;
+use Piwik\Filesystem;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheFactory;
 
@@ -94,9 +95,9 @@ class DeviceDetectorFactoryTest extends \PHPUnit_Framework_TestCase
     private function writeFile($expected, $userAgent)
     {
         $hashedUserAgent = md5($userAgent);
-        $dirToWrite = PIWIK_DOCUMENT_ROOT . DeviceDetectorCacheEntry::CACHE_DIR . substr($hashedUserAgent, 0, 2);
-        if (! file_exists($dirToWrite)) {
-            mkdir($dirToWrite);
+        $dirToWrite = DeviceDetectorCacheEntry::getCachePath($userAgent);
+        if (!is_dir($dirToWrite)) {
+            Filesystem::mkdir($dirToWrite);
         }
         $content = "<?php return " . var_export($expected, true) . ";";
         $outputFile = $dirToWrite . '/' . $hashedUserAgent . '.php';
