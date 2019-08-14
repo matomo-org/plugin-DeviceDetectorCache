@@ -1,5 +1,7 @@
 # Matomo DeviceDetectorCache Plugin
 
+[![Build Status](https://travis-ci.org/matomo-org/plugin-DeviceDetectorCache.svg?branch=master)](https://travis-ci.org/matomo-org/plugin-DeviceDetectorCache)
+
 ## Description
 
 Makes device detection in Matomo faster by having cached entries for many commonly used user agents.
