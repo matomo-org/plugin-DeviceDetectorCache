@@ -141,8 +141,25 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         );
 
         $this->assertContains("Written 2 cache entries to file", $this->applicationTester->getDisplay());
-        $userAgent3 = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
-        $this->assertUserAgentNotWrittenToFile($userAgent3);
+        $this->assertUserAgentWrittenToFile($userAgents[0]);
+        $this->assertUserAgentWrittenToFile($userAgents[1]);
+        $this->assertUserAgentNotWrittenToFile($userAgents[2]);
+    }
+
+    public function testVeryLongUserAgent()
+    {
+        $testFile = __DIR__ . '/files/useragentsverylong.csv';
+
+        $this->applicationTester->run(array(
+            'command' => WarmDeviceDetectorCache::COMMAND_NAME,
+            'input-file' => $testFile,
+            '--skip-header-row' => false
+        ));
+
+        $userAgentStr = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36 QBCore/3.53.1159.400 QQBrowser/9.0.2524.400 Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 MicroMessenger/6.5.2.501 NetType/WIFI WindowsWechat AndHereIsAVeryLongStringJustToMakeSureThatWeHitOver500CharactersWithThisRidiculouslyLongUserAgentThatIsLikelyToBreakOurCodeBecauseWeTruncateTheUserAgentAt500CharactersThatIsAnAwfulLotOfCharactersImStillGoing";
+
+        $this->assertContains("Written 1 cache entries to file", $this->applicationTester->getDisplay());
+        $this->assertUserAgentWrittenToFile($userAgentStr);
     }
 
     private function assertUserAgentNotWrittenToFile($userAgent)

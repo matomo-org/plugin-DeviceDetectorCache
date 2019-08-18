@@ -1,9 +1,15 @@
 <?php
-
+/**
+ * Matomo - free/libre analytics platform
+ *
+ * @link https://matomo.org
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ */
 
 namespace Piwik\Plugins\DeviceDetectorCache\Commands;
 
 use Piwik\DeviceDetector\DeviceDetectorFactory;
+use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCache;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
 use Piwik\Plugin\ConsoleCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -141,23 +147,8 @@ class WarmDeviceDetectorCache extends ConsoleCommand
 
         $factory = new DeviceDetectorFactory();
         $deviceDetector = $factory->makeInstance($userAgentStr);
-        $outputArray = array(
-            'bot' => $deviceDetector->getBot(),
-            'brand' => $deviceDetector->getBrand(),
-            'client' => $deviceDetector->getClient(),
-            'device' => $deviceDetector->getDevice(),
-            'model' => $deviceDetector->getModel(),
-            'os' => $deviceDetector->getOs()
-        );
 
-        $outputPath = DeviceDetectorCacheEntry::getCachePath($userAgentStr, true);
-        $this->writeUserAgent($outputPath, $outputArray);
-    }
-
-    private function writeUserAgent($filePath, $outputArray)
-    {
-        $content = "<?php return " . var_export($outputArray, true) . ";";
-        file_put_contents($filePath, $content, LOCK_EX);
+        DeviceDetectorCache::writeToCache($userAgentStr, $deviceDetector);
         $this->numCacheEntriesWritten++;
     }
 }

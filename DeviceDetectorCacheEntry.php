@@ -10,6 +10,7 @@
 namespace Piwik\Plugins\DeviceDetectorCache;
 
 use DeviceDetector\DeviceDetector;
+use Piwik\DeviceDetector\DeviceDetectorFactory;
 use Piwik\Filesystem;
 use Piwik\Plugin\Manager;
 
@@ -36,6 +37,7 @@ class DeviceDetectorCacheEntry extends DeviceDetector
 
     public static function getCachePath($userAgent, $createDirs = false)
     {
+        $userAgent = DeviceDetectorFactory::getNormalizedUserAgent($userAgent);
         $hashedUserAgent = md5($userAgent);
 
         // We use hash subdirs so we don't have 1000s of files in the one dir
