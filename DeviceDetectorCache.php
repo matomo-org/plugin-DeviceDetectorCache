@@ -13,6 +13,12 @@ use Piwik\DeviceDetector\DeviceDetectorFactory;
 
 class DeviceDetectorCache extends \Piwik\Plugin
 {
+
+    public function isTrackerPlugin()
+    {
+        return true;
+    }
+
     public static function writeToCache($userAgentStr, DeviceDetector $device)
     {
         $userAgentStr = DeviceDetectorFactory::getNormalizedUserAgent($userAgentStr);

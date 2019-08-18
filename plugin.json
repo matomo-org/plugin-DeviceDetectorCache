@@ -1,7 +1,7 @@
 {
   "name": "DeviceDetectorCache",
-  "description": "Caches parsed device detection info on the file system",
-  "version": "0.1.0",
+  "description": "Makes tracking faster by detecting many devices, operating systems, bots, and browsers from a cache.",
+  "version": "3.0.0",
   "theme": false,
   "require": {
     "piwik": ">=3.12.0-b1,<4.0.0-b1"
@@ -9,21 +9,14 @@
   "authors": [
     {
       "name": "Matomo",
-      "email": "",
-      "homepage": ""
+      "email": "hello@matomo.org",
+      "homepage": "https://matomo.org"
     }
   ],
   "support": {
-	    "email": "",
-	    "issues": "",
-	    "forum": "",
-	    "irc": "",
-	    "wiki": "",
-	    "source": "",
-	    "docs": "",
-	    "rss": ""
+	    "issues": "https://github.com/matomo-org/plugin-DeviceDetectorCache/issues"
   },
-  "homepage": "",
+  "homepage": "https://matomo.org",
   "license": "GPL v3+",
-  "keywords": []
+  "keywords": ["device", "detector", "tracking", "performance"]
 }
