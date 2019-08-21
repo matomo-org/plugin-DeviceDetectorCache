@@ -11,6 +11,21 @@ use Piwik\Tests\Framework\TestCase\ConsoleCommandTestCase;
 
 class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+        DeviceDetectorCacheEntry::setCacheDir('/testcache/');
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+        DeviceDetectorCacheEntry::clearCacheDir();
+        if (file_exists(DeviceDetectorCacheEntry::getCacheDir())) {
+            rmdir(DeviceDetectorCacheEntry::getCacheDir());
+        }
+    }
+
     public function testWritesUserAgentsToFile()
     {
         $testFile = __DIR__ . '/files/useragents1.csv';
@@ -81,7 +96,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $this->assertUserAgentNotWrittenToFile($userAgent);
     }
 
-    public function testClearsExistingFilesFromCacheByDefault()
+    public function testClearsExistingFilesFromCacheWhenOptionPassed()
     {
         $userAgent = 'Mozilla/5.0 (Linux; Android 8.0.0; SAMSUNG SM-G930F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/9.4 Chrome/67.0.3396.87 Mobile Safari/537.36';
         $cacheFilePath = DeviceDetectorCacheEntry::getCachePath($userAgent, true);
@@ -95,6 +110,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
 
         $this->applicationTester->run(array(
             'command' => WarmDeviceDetectorCache::COMMAND_NAME,
+            '--clear' => true,
             'input-file' => $testFile
         ));
 
@@ -104,7 +120,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $this->assertFileNotExists($cacheHashDir);
     }
 
-    public function testDoesntClearExistingFilesFromCacheWhenOptionPassed()
+    public function testDoesntClearExistingFilesFromCacheByDefault()
     {
         $userAgent = 'Mozilla/5.0 (Linux; Android 8.0.0; SAMSUNG SM-G930F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/9.4 Chrome/67.0.3396.87 Mobile Safari/537.36';
         $cacheFilePath = DeviceDetectorCacheEntry::getCachePath($userAgent, true);
@@ -116,8 +132,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
 
         $this->applicationTester->run(array(
             'command' => WarmDeviceDetectorCache::COMMAND_NAME,
-            'input-file' => $testFile,
-            '--clear' => false
+            'input-file' => $testFile
         ));
 
         $this->assertFileExists($cacheFilePath);

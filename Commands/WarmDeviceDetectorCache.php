@@ -62,7 +62,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption(self::OPTION_CLEAR_EXISTING_CACHE)) {
-            $this->clearCacheDirectory();
+            DeviceDetectorCacheEntry::clearCacheDir();
         }
 
         $inputFile = $this->openFile(
@@ -86,19 +86,6 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             fclose($inputFile);
         }
         $output->writeln("Written " . $this->numCacheEntriesWritten . " cache entries to file");
-    }
-
-    private function clearCacheDirectory()
-    {
-        $cacheDir = DeviceDetectorCacheEntry::getCacheDir();
-        if (!file_exists($cacheDir)) {
-            return;
-        }
-        $di = new \RecursiveDirectoryIterator($cacheDir, \FilesystemIterator::SKIP_DOTS);
-        $ri = new \RecursiveIteratorIterator($di, \RecursiveIteratorIterator::CHILD_FIRST);
-        foreach ( $ri as $file ) {
-            $file->isDir() ?  rmdir($file) : unlink($file);
-        }
     }
 
     private function openFile($filePath, $skipFirstRow)

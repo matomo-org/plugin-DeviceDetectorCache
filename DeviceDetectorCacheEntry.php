@@ -16,7 +16,7 @@ use Piwik\Plugin\Manager;
 
 class DeviceDetectorCacheEntry extends DeviceDetector
 {
-    const CACHE_DIR = "/cache/";
+    static $cacheDir = "/cache/";
 
     public function __construct($userAgent)
     {
@@ -58,6 +58,24 @@ class DeviceDetectorCacheEntry extends DeviceDetector
 
     public static function getCacheDir()
     {
-        return Manager::getPluginDirectory('DeviceDetectorCache') . self::CACHE_DIR;
+        return Manager::getPluginDirectory('DeviceDetectorCache') . self::$cacheDir;
+    }
+
+    public static function setCacheDir($cacheDir)
+    {
+        self::$cacheDir = $cacheDir;
+    }
+
+    public static function clearCacheDir()
+    {
+        $cacheDir = self::getCacheDir();
+        if (!file_exists($cacheDir)) {
+            return;
+        }
+        $di = new \RecursiveDirectoryIterator($cacheDir, \FilesystemIterator::SKIP_DOTS);
+        $ri = new \RecursiveIteratorIterator($di, \RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ( $ri as $file ) {
+            $file->isDir() ?  rmdir($file) : unlink($file);
+        }
     }
 }
