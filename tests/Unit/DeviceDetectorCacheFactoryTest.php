@@ -9,25 +9,22 @@
 namespace Piwik\Tests\Unit;
 
 use Piwik\DeviceDetector\DeviceDetectorFactory;
-use Piwik\Filesystem;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheFactory;
 
 class DeviceDetectorCacheFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    private $filesToTearDown = array();
-
     public function setUp()
     {
         DeviceDetectorFactory::clearInstancesCache();
+        DeviceDetectorCacheEntry::setCacheDir('/testcache/');
     }
 
     public function tearDown()
     {
-        foreach ($this->filesToTearDown as $file) {
-            if (file_exists($file)) {
-                unlink($file);
-            }
+        DeviceDetectorCacheEntry::clearCacheDir();
+        if (file_exists(DeviceDetectorCacheEntry::getCacheDir())) {
+            rmdir(DeviceDetectorCacheEntry::getCacheDir());
         }
     }
 
@@ -94,11 +91,8 @@ class DeviceDetectorCacheFactoryTest extends \PHPUnit_Framework_TestCase
 
     private function writeFile($expected, $userAgent)
     {
-        $hashedUserAgent = md5($userAgent);
-        $dirToWrite = DeviceDetectorCacheEntry::getCachePath($userAgent, true);
+        $filePath = DeviceDetectorCacheEntry::getCachePath($userAgent, true);
         $content = "<?php return " . var_export($expected, true) . ";";
-        $outputFile = $dirToWrite . '/' . $hashedUserAgent . '.php';
-        $this->filesToTearDown[] = $outputFile;
-        file_put_contents($outputFile, $content, LOCK_EX);
+        file_put_contents($filePath, $content, LOCK_EX);
     }
 }
