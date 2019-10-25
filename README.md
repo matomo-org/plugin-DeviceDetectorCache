@@ -10,7 +10,7 @@ By default, Matomo runs thousands of regular expressions for each tracking reque
 
 This plugin changes this by first looking if a cached result exists for the particular user agent and if so, directly loads the result from the file system.
 
-We recommend this plugin only if you have a high traffic website. Depending on your server it may safe you a few ms per tracking request (say 5ms which may be say 10% of the total tracking request time).
+We recommend this plugin only if you have a high traffic website. Depending on your server it may save you a few ms per tracking request (say 5ms which may be say 10% of the total tracking request time).
 
 If you have not that much traffic, the overhead might not be worth it.
 
