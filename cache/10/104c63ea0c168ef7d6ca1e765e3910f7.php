@@ -3,12 +3,9 @@
   'brand' => 'SA',
   'client' => 
   array (
-    'type' => 'browser',
-    'name' => 'Chrome Mobile',
-    'short_name' => 'CM',
-    'version' => '77.0',
-    'engine' => 'Blink',
-    'engine_version' => '',
+    'type' => 'mobile app',
+    'name' => 'Instagram App',
+    'version' => '115.0',
   ),
   'device' => 10,
   'model' => 'GALAXY Note 9',

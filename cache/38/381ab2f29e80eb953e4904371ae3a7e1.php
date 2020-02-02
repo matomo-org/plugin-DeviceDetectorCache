@@ -3,12 +3,9 @@
   'brand' => 'SA',
   'client' => 
   array (
-    'type' => 'browser',
-    'name' => 'Chrome Mobile',
-    'short_name' => 'CM',
-    'version' => '77.0',
-    'engine' => 'Blink',
-    'engine_version' => '',
+    'type' => 'mobile app',
+    'name' => 'Instagram App',
+    'version' => '112.0',
   ),
   'device' => 1,
   'model' => 'SM-G977N',

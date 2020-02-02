@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => 'Redmi 5',
+  'model' => 'Redmi 5 Plus',
   'os' => 
   array (
     'name' => 'Android',

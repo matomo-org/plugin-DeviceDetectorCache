@@ -3,15 +3,12 @@
   'brand' => 'AP',
   'client' => 
   array (
-    'type' => 'browser',
-    'name' => 'Mobile Safari',
-    'short_name' => 'MF',
-    'version' => '',
-    'engine' => 'WebKit',
-    'engine_version' => '605.1.15',
+    'type' => 'mobile app',
+    'name' => 'Instagram App',
+    'version' => '114.0',
   ),
   'device' => 1,
-  'model' => 'iPhone',
+  'model' => 'iPhone XR',
   'os' => 
   array (
     'name' => 'iOS',

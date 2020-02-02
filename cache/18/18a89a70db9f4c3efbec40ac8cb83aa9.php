@@ -8,7 +8,7 @@
     'version' => '242.0',
   ),
   'device' => 1,
-  'model' => 'SM-A107F',
+  'model' => 'GALAXY A10s',
   'os' => 
   array (
     'name' => 'Android',

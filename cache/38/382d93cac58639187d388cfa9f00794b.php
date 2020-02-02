@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => '6',
+  'model' => '6.1 Plus',
   'os' => 
   array (
     'name' => 'Android',

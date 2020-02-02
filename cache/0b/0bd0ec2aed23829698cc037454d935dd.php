@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => '',
+  'model' => 'A37f',
   'os' => 
   array (
     'name' => 'Android',

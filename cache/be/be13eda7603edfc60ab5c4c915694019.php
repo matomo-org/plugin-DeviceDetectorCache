@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => 'SM-J415F',
+  'model' => 'GALAXY J4+',
   'os' => 
   array (
     'name' => 'Android',

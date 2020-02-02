@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => '',
+  'model' => 'F11 Pro',
   'os' => 
   array (
     'name' => 'Android',

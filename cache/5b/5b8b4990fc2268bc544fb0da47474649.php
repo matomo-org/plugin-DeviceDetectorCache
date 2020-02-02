@@ -3,12 +3,9 @@
   'brand' => 'OP',
   'client' => 
   array (
-    'type' => 'browser',
-    'name' => 'Chrome Mobile',
-    'short_name' => 'CM',
-    'version' => '46.0',
-    'engine' => 'Blink',
-    'engine_version' => '',
+    'type' => 'mobile app',
+    'name' => 'Instagram App',
+    'version' => '109.0',
   ),
   'device' => 1,
   'model' => 'A37f',

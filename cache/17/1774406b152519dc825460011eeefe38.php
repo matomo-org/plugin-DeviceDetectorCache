@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => '1606',
+  'model' => 'Y53i',
   'os' => 
   array (
     'name' => 'Android',

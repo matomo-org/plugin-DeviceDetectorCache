@@ -1,6 +1,6 @@
 <?php return array (
   'bot' => NULL,
-  'brand' => '',
+  'brand' => 'OP',
   'client' => 
   array (
     'type' => 'browser',
@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => '',
+  'model' => 'RealMe C2',
   'os' => 
   array (
     'name' => 'Android',

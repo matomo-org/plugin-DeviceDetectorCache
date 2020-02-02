@@ -8,7 +8,7 @@
     'version' => '201.0',
   ),
   'device' => 1,
-  'model' => '',
+  'model' => 'A1K',
   'os' => 
   array (
     'name' => 'Android',

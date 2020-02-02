@@ -11,7 +11,7 @@
     'engine_version' => '537.36',
   ),
   'device' => 1,
-  'model' => 'SM-A705FN',
+  'model' => 'GALAXY A70',
   'os' => 
   array (
     'name' => 'Android',

@@ -4,9 +4,9 @@
   'client' => 
   array (
     'type' => 'browser',
-    'name' => 'Chrome',
-    'short_name' => 'CH',
-    'version' => '76.0',
+    'name' => 'Mobile Silk',
+    'short_name' => 'MS',
+    'version' => '76.3',
     'engine' => 'Blink',
     'engine_version' => '',
   ),

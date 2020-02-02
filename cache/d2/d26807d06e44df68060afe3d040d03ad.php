@@ -11,7 +11,7 @@
     'engine_version' => '14.14393',
   ),
   'device' => 1,
-  'model' => 'Lumia 730 Dual SIM',
+  'model' => 'Lumia 730',
   'os' => 
   array (
     'name' => 'Windows Phone',

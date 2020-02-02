@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => '',
+  'model' => 'A9 (2020)',
   'os' => 
   array (
     'name' => 'Android',
