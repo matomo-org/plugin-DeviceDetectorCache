@@ -14,13 +14,13 @@ use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheFactory;
 
 class DeviceDetectorCacheFactoryTest extends \PHPUnit\Framework\TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         DeviceDetectorFactory::clearInstancesCache();
         DeviceDetectorCacheEntry::setCacheDir('/testcache/');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         DeviceDetectorCacheEntry::clearCacheDir();
         if (file_exists(DeviceDetectorCacheEntry::getCacheDir())) {
