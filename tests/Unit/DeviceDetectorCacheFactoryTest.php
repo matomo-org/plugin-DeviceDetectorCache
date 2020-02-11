@@ -12,7 +12,7 @@ use Piwik\DeviceDetector\DeviceDetectorFactory;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheFactory;
 
-class DeviceDetectorCacheFactoryTest extends \PHPUnit_Framework_TestCase
+class DeviceDetectorCacheFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function setUp()
     {
