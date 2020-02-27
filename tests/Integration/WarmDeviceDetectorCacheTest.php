@@ -11,13 +11,13 @@ use Piwik\Tests\Framework\TestCase\ConsoleCommandTestCase;
 
 class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         DeviceDetectorCacheEntry::setCacheDir('/testcache/');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         DeviceDetectorCacheEntry::clearCacheDir();
@@ -41,7 +41,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
             'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'
         );
 
-        $this->assertContains("Written 3 cache entries to file", $this->applicationTester->getDisplay());
+        self::assertStringContainsString("Written 3 cache entries to file", $this->applicationTester->getDisplay());
         foreach ($userAgents as $userAgent) {
             $this->assertUserAgentWrittenToFile($userAgent);
         }
@@ -56,7 +56,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
             'input-file' => $testFile
         ));
 
-        $this->assertContains("File $testFile not found", $this->applicationTester->getDisplay());
+        self::assertStringContainsString("File $testFile not found", $this->applicationTester->getDisplay());
     }
 
     public function testNotSkippingHeaderRow()
@@ -75,7 +75,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
             'Dalvik/2.1.0 (Linux; U; Android 6.0.1; SM-J510FN Build/MMB29M)'
         );
 
-        $this->assertContains("Written 3 cache entries to file", $this->applicationTester->getDisplay());
+        self::assertStringContainsString("Written 3 cache entries to file", $this->applicationTester->getDisplay());
         foreach ($userAgents as $userAgent) {
             $this->assertUserAgentWrittenToFile($userAgent);
         }
@@ -90,7 +90,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
             'input-file' => $testFile
         ));
 
-        $this->assertContains("Written 0 cache entries to file", $this->applicationTester->getDisplay());
+        self::assertStringContainsString("Written 0 cache entries to file", $this->applicationTester->getDisplay());
 
         $userAgent = 'Amazon-Route53-Health-Check-Service (ref d14cb74a-74d4-4400-940d-1579e3f0181b; report http://amzn.to/1vsZADi)';
         $this->assertUserAgentNotWrittenToFile($userAgent);
@@ -155,7 +155,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
             'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko'
         );
 
-        $this->assertContains("Written 2 cache entries to file", $this->applicationTester->getDisplay());
+        self::assertStringContainsString("Written 2 cache entries to file", $this->applicationTester->getDisplay());
         $this->assertUserAgentWrittenToFile($userAgents[0]);
         $this->assertUserAgentWrittenToFile($userAgents[1]);
         $this->assertUserAgentNotWrittenToFile($userAgents[2]);
@@ -173,7 +173,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
 
         $userAgentStr = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36 QBCore/3.53.1159.400 QQBrowser/9.0.2524.400 Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 MicroMessenger/6.5.2.501 NetType/WIFI WindowsWechat AndHereIsAVeryLongStringJustToMakeSureThatWeHitOver500CharactersWithThisRidiculouslyLongUserAgentThatIsLikelyToBreakOurCodeBecauseWeTruncateTheUserAgentAt500CharactersThatIsAnAwfulLotOfCharactersImStillGoing";
 
-        $this->assertContains("Written 1 cache entries to file", $this->applicationTester->getDisplay());
+        self::assertStringContainsString("Written 1 cache entries to file", $this->applicationTester->getDisplay());
         $this->assertUserAgentWrittenToFile($userAgentStr);
     }
 
