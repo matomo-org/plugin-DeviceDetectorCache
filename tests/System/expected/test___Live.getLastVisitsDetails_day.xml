@@ -37,6 +37,8 @@
 				<timeSpent>361</timeSpent>
 				<timeSpentPretty>6 min 1s</timeSpentPretty>
 				<siteSearchKeyword>this is a site search query</siteSearchKeyword>
+				<siteSearchCategory />
+				<siteSearchCount />
 				<interactionPosition>2</interactionPosition>
 				<icon>plugins/Morpheus/images/search.png</icon>
 				<iconSVG>plugins/Morpheus/images/search.svg</iconSVG>
