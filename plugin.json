@@ -1,7 +1,7 @@
 {
   "name": "DeviceDetectorCache",
   "description": "Makes tracking faster by detecting many devices, operating systems, bots, and browsers from a cache.",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "theme": false,
   "require": {
     "piwik": ">=3.12.0-b3,<4.0.0-b1"
