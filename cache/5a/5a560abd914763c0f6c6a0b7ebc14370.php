@@ -1,12 +1,12 @@
 <?php return array (
   'bot' => NULL,
-  'brand' => '',
+  'brand' => 'OS',
   'client' => 
   array (
     'type' => 'browser',
-    'name' => 'Firefox',
-    'short_name' => 'FF',
-    'version' => '45.0',
+    'name' => 'Ordissimo',
+    'short_name' => 'OS',
+    'version' => '3.8',
     'engine' => 'Gecko',
     'engine_version' => '',
   ),
@@ -14,8 +14,8 @@
   'model' => '',
   'os' => 
   array (
-    'name' => 'GNU/Linux',
-    'short_name' => 'LIN',
+    'name' => 'Ordissimo',
+    'short_name' => 'ORD',
     'version' => '',
     'platform' => 'x86',
   ),
