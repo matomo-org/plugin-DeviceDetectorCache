@@ -1,17 +1,17 @@
 <?php return array (
   'bot' => NULL,
-  'brand' => '',
+  'brand' => 'KN',
   'client' => 
   array (
     'type' => 'browser',
-    'name' => 'Chrome',
-    'short_name' => 'CH',
+    'name' => 'Chrome Webview',
+    'short_name' => 'CV',
     'version' => '70.0',
     'engine' => 'Blink',
     'engine_version' => '',
   ),
   'device' => 2,
-  'model' => '',
+  'model' => 'Fire HD 10 (2017)',
   'os' => 
   array (
     'name' => 'Android',

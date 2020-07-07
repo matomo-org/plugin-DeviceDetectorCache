@@ -4,11 +4,11 @@
   'client' => 
   array (
     'type' => 'browser',
-    'name' => 'Chrome',
-    'short_name' => 'CH',
-    'version' => '55.0',
-    'engine' => 'Blink',
-    'engine_version' => '',
+    'name' => 'UBrowser',
+    'short_name' => 'UB',
+    'version' => '6.2',
+    'engine' => 'WebKit',
+    'engine_version' => '537.36',
   ),
   'device' => 0,
   'model' => '',

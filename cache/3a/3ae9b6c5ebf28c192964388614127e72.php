@@ -11,7 +11,7 @@
     'engine_version' => '537.36',
   ),
   'device' => 1,
-  'model' => 'SM-J415FN',
+  'model' => 'GALAXY J4+',
   'os' => 
   array (
     'name' => 'Android',

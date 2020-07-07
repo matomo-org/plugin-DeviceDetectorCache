@@ -10,8 +10,8 @@
     'engine' => 'WebKit',
     'engine_version' => '537.36',
   ),
-  'device' => 2,
-  'model' => 'SM-N975F',
+  'device' => 10,
+  'model' => 'GALAXY Note 10+',
   'os' => 
   array (
     'name' => 'Android',

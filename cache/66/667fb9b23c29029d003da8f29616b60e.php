@@ -11,7 +11,7 @@
     'engine_version' => '537.36',
   ),
   'device' => 1,
-  'model' => 'SM-A107F',
+  'model' => 'GALAXY A10s',
   'os' => 
   array (
     'name' => 'Android',

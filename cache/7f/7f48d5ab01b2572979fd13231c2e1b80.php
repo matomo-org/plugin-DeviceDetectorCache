@@ -11,7 +11,7 @@
     'engine_version' => '7.0',
   ),
   'device' => 1,
-  'model' => 'Lumia 640 LTE',
+  'model' => 'Lumia 640',
   'os' => 
   array (
     'name' => 'Windows Phone',

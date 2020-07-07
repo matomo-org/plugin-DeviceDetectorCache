@@ -4,14 +4,14 @@
   'client' => 
   array (
     'type' => 'browser',
-    'name' => 'Chrome Mobile',
-    'short_name' => 'CM',
-    'version' => '62.0',
-    'engine' => 'Blink',
-    'engine_version' => '',
+    'name' => 'vivo Browser',
+    'short_name' => 'VV',
+    'version' => '5.7',
+    'engine' => 'WebKit',
+    'engine_version' => '537.36',
   ),
   'device' => 1,
-  'model' => '1606',
+  'model' => 'Y53i',
   'os' => 
   array (
     'name' => 'Android',

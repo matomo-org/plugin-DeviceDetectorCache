@@ -1,6 +1,6 @@
 <?php return array (
   'bot' => NULL,
-  'brand' => '',
+  'brand' => 'HU',
   'client' => 
   array (
     'type' => 'browser',
@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => '',
+  'model' => 'P30 Lite Dual SIM',
   'os' => 
   array (
     'name' => 'Android',

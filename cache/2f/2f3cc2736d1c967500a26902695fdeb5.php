@@ -3,12 +3,9 @@
   'brand' => 'AP',
   'client' => 
   array (
-    'type' => 'browser',
-    'name' => 'Mobile Safari',
-    'short_name' => 'MF',
-    'version' => '',
-    'engine' => 'WebKit',
-    'engine_version' => '603.1.30',
+    'type' => 'mobile app',
+    'name' => 'Google Search App',
+    'version' => '68.0',
   ),
   'device' => 2,
   'model' => 'iPad',

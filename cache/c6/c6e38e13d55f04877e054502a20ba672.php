@@ -4,11 +4,11 @@
   'client' => 
   array (
     'type' => 'browser',
-    'name' => 'Chrome Mobile',
-    'short_name' => 'CM',
+    'name' => 'Ecosia',
+    'short_name' => 'EC',
     'version' => '69.0',
-    'engine' => 'Blink',
-    'engine_version' => '',
+    'engine' => 'WebKit',
+    'engine_version' => '537.36',
   ),
   'device' => 1,
   'model' => 'P20 Lite',

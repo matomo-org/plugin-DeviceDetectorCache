@@ -1,6 +1,6 @@
 <?php return array (
   'bot' => NULL,
-  'brand' => '',
+  'brand' => 'LG',
   'client' => 
   array (
     'type' => 'browser',
@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => '',
+  'model' => 'K40',
   'os' => 
   array (
     'name' => 'Android',

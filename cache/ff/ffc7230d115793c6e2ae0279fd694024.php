@@ -3,12 +3,9 @@
   'brand' => 'SA',
   'client' => 
   array (
-    'type' => 'browser',
-    'name' => 'Android Browser',
-    'short_name' => 'AN',
-    'version' => '',
-    'engine' => 'WebKit',
-    'engine_version' => '534.30',
+    'type' => 'mobile app',
+    'name' => 'Instagram App',
+    'version' => '54.0',
   ),
   'device' => 10,
   'model' => 'GALAXY Grand Neo Duos',

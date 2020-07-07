@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => '',
+  'model' => 'F1s',
   'os' => 
   array (
     'name' => 'Android',

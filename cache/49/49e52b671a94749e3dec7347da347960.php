@@ -11,7 +11,7 @@
     'engine_version' => '537.36',
   ),
   'device' => 1,
-  'model' => 'Browser',
+  'model' => 'A5S',
   'os' => 
   array (
     'name' => 'Android',

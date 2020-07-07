@@ -4,11 +4,11 @@
   'client' => 
   array (
     'type' => 'browser',
-    'name' => 'Chrome Mobile',
-    'short_name' => 'CM',
-    'version' => '44.0',
-    'engine' => 'Blink',
-    'engine_version' => '',
+    'name' => 'CM Browser',
+    'short_name' => 'CE',
+    'version' => '',
+    'engine' => 'WebKit',
+    'engine_version' => '537.36',
   ),
   'device' => 1,
   'model' => 'GALAXY S7',

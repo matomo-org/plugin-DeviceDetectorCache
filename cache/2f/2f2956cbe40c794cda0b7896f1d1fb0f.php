@@ -4,8 +4,8 @@
   'client' => 
   array (
     'type' => 'browser',
-    'name' => 'Chrome Mobile',
-    'short_name' => 'CM',
+    'name' => 'Chrome Webview',
+    'short_name' => 'CV',
     'version' => '28.0',
     'engine' => 'Blink',
     'engine_version' => '',

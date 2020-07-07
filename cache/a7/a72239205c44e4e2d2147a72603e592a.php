@@ -4,11 +4,11 @@
   'client' => 
   array (
     'type' => 'browser',
-    'name' => 'Chrome',
-    'short_name' => 'CH',
-    'version' => '63.0',
-    'engine' => 'Blink',
-    'engine_version' => '',
+    'name' => 'Huawei Browser',
+    'short_name' => 'HU',
+    'version' => '9.1',
+    'engine' => 'WebKit',
+    'engine_version' => '537.36',
   ),
   'device' => 1,
   'model' => 'P30 Pro',

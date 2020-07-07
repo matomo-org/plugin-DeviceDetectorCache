@@ -4,7 +4,7 @@
   'client' => 
   array (
     'type' => 'browser',
-    'name' => 'Liebao',
+    'name' => 'Cheetah Browser',
     'short_name' => 'LB',
     'version' => '',
     'engine' => 'WebKit',

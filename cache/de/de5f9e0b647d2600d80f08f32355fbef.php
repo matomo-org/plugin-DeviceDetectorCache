@@ -11,7 +11,7 @@
     'engine_version' => '537.36',
   ),
   'device' => 1,
-  'model' => 'SM-A202F',
+  'model' => 'GALAXY A20e',
   'os' => 
   array (
     'name' => 'Android',

@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => 'MRD-LX3',
+  'model' => 'Y6 (2019)',
   'os' => 
   array (
     'name' => 'Android',

@@ -11,7 +11,7 @@
     'engine_version' => '',
   ),
   'device' => 1,
-  'model' => 'SM-J260T1',
+  'model' => 'GALAXY J2 Core',
   'os' => 
   array (
     'name' => 'Android',
