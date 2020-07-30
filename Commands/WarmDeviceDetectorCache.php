@@ -2,16 +2,16 @@
 /**
  * Matomo - free/libre analytics platform
  *
- * @link https://matomo.org
+ * @link    https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 
 namespace Piwik\Plugins\DeviceDetectorCache\Commands;
 
 use Piwik\DeviceDetector\DeviceDetectorFactory;
+use Piwik\Plugin\ConsoleCommand;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCache;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
-use Piwik\Plugin\ConsoleCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -37,7 +37,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
         $this->setName(self::COMMAND_NAME);
         $this->setDescription(
             'Populate the device detector cache with commonly used useragent strings, as provided in the input file.');
-        $this->addArgument(self::OPTION_INPUT_FILE, InputArgument::REQUIRED, 
+        $this->addArgument(self::OPTION_INPUT_FILE, InputArgument::REQUIRED,
             'CSV file containing list of useragents to include');
         $this->addOption(
             self::OPTION_ROWS_TO_PROCESS,
@@ -66,12 +66,12 @@ class WarmDeviceDetectorCache extends ConsoleCommand
         }
 
         $inputFile = $this->openFile(
-            $input->getArgument(self::OPTION_INPUT_FILE), 
+            $input->getArgument(self::OPTION_INPUT_FILE),
             $input->getOption(self::OPTION_SKIP_HEADER)
         );
 
         $maxRowsToProcess = (int)$input->getOption(self::OPTION_ROWS_TO_PROCESS);
-        $counter = 0;
+        $counter          = 0;
 
         try {
             while ($data = fgetcsv($inputFile)) {
@@ -90,7 +90,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
 
     private function openFile($filePath, $skipFirstRow)
     {
-        if (! file_exists($filePath)) {
+        if (!file_exists($filePath)) {
             throw new \Exception("File $filePath not found");
         }
         $inputHandle = fopen($filePath, 'r');
@@ -109,7 +109,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
     {
         $matches = array();
         foreach (self::$userAgentsPatternsToIgnore as $pattern) {
-            preg_match($pattern, $userAgent,   $matches);
+            preg_match($pattern, $userAgent, $matches);
             if ($matches) {
                 return false;
             }
@@ -132,7 +132,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             return;
         }
 
-        $factory = new DeviceDetectorFactory();
+        $factory        = new DeviceDetectorFactory();
         $deviceDetector = $factory->makeInstance($userAgentStr);
 
         DeviceDetectorCache::writeToCache($userAgentStr, $deviceDetector);

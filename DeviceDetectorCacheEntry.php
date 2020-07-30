@@ -2,7 +2,7 @@
 /**
  * Matomo - free/libre analytics platform
  *
- * @link https://matomo.org
+ * @link    https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
@@ -21,13 +21,13 @@ class DeviceDetectorCacheEntry extends DeviceDetector
     public function __construct($userAgent)
     {
         parent::setUserAgent($userAgent);
-        $values = include(self::getCachePath($userAgent));
-        $this->bot = $values['bot'];
-        $this->brand = $values['brand'];
+        $values       = include(self::getCachePath($userAgent));
+        $this->bot    = $values['bot'];
+        $this->brand  = $values['brand'];
         $this->client = $values['client'];
         $this->device = $values['device'];
-        $this->model = $values['model'];
-        $this->os = $values['os'];
+        $this->model  = $values['model'];
+        $this->os     = $values['os'];
     }
 
     public static function isCached($userAgent)
@@ -37,12 +37,12 @@ class DeviceDetectorCacheEntry extends DeviceDetector
 
     public static function getCachePath($userAgent, $createDirs = false)
     {
-        $userAgent = DeviceDetectorFactory::getNormalizedUserAgent($userAgent);
+        $userAgent       = DeviceDetectorFactory::getNormalizedUserAgent($userAgent);
         $hashedUserAgent = md5($userAgent);
 
         // We use hash subdirs so we don't have 1000s of files in the one dir
         $cacheDir = self::getCacheDir();
-        $hashDir = $cacheDir . substr($hashedUserAgent, 0, 2);
+        $hashDir  = $cacheDir . substr($hashedUserAgent, 0, 2);
 
         if ($createDirs) {
             if (!is_dir($cacheDir)) {
@@ -74,8 +74,8 @@ class DeviceDetectorCacheEntry extends DeviceDetector
         }
         $di = new \RecursiveDirectoryIterator($cacheDir, \FilesystemIterator::SKIP_DOTS);
         $ri = new \RecursiveIteratorIterator($di, \RecursiveIteratorIterator::CHILD_FIRST);
-        foreach ( $ri as $file ) {
-            $file->isDir() ?  rmdir($file) : unlink($file);
+        foreach ($ri as $file) {
+            $file->isDir() ? rmdir($file) : unlink($file);
         }
     }
 }

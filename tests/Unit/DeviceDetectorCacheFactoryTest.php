@@ -2,11 +2,11 @@
 /**
  * Matomo - free/libre analytics platform
  *
- * @link https://matomo.org
+ * @link    https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 
-namespace Piwik\Tests\Unit;
+namespace Piwik\Plugins\DeviceDetectorCache\tests\Unit;
 
 use Piwik\DeviceDetector\DeviceDetectorFactory;
 use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
@@ -31,23 +31,23 @@ class DeviceDetectorCacheFactoryTest extends \PHPUnit\Framework\TestCase
     public function testGetInstanceFromCache()
     {
         $userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0";
-        $expected = array(
-            'bot' => null,
-            'brand' => 'Cooper',
+        $expected  = array(
+            'bot'    => null,
+            'brand'  => 'Cooper',
             'client' => array(
                 'type' => 'browser',
                 'name' => 'Microsoft Edge'
             ),
             'device' => 1,
-            'model' => 'iPhone',
-            'os' => array(
+            'model'  => 'iPhone',
+            'os'     => array(
                 'name' => 'Linux'
             )
         );
 
         $this->writeFile($expected, $userAgent);
 
-        $factory = new DeviceDetectorCacheFactory();
+        $factory         = new DeviceDetectorCacheFactory();
         $deviceDetection = $factory->makeInstance($userAgent);
         $this->assertInstanceOf("\Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry", $deviceDetection);
         $this->assertEquals(null, $deviceDetection->getBot());
@@ -61,24 +61,24 @@ class DeviceDetectorCacheFactoryTest extends \PHPUnit\Framework\TestCase
     public function testGetInstanceFromDeviceDetector()
     {
         $userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0";
-        $expected = array(
+        $expected  = array(
             'client' => array(
-                'type' => 'browser',
-                'name' => 'Firefox',
-                'short_name' => 'FF',
-                'version' => '33.0',
-                'engine' => 'Gecko',
+                'type'           => 'browser',
+                'name'           => 'Firefox',
+                'short_name'     => 'FF',
+                'version'        => '33.0',
+                'engine'         => 'Gecko',
                 'engine_version' => ''
             ),
-            'os' => array(
-                'name' => 'Mac',
+            'os'     => array(
+                'name'       => 'Mac',
                 'short_name' => 'MAC',
-                'version' => '10.10',
-                'platform' => ''
+                'version'    => '10.10',
+                'platform'   => ''
             )
         );
 
-        $factory = new DeviceDetectorCacheFactory();
+        $factory         = new DeviceDetectorCacheFactory();
         $deviceDetection = $factory->makeInstance($userAgent);
         $this->assertInstanceOf("\DeviceDetector\DeviceDetector", $deviceDetection);
         $this->assertEquals(null, $deviceDetection->getBot());
@@ -92,7 +92,7 @@ class DeviceDetectorCacheFactoryTest extends \PHPUnit\Framework\TestCase
     private function writeFile($expected, $userAgent)
     {
         $filePath = DeviceDetectorCacheEntry::getCachePath($userAgent, true);
-        $content = "<?php return " . var_export($expected, true) . ";";
+        $content  = "<?php return " . var_export($expected, true) . ";";
         file_put_contents($filePath, $content, LOCK_EX);
     }
 }

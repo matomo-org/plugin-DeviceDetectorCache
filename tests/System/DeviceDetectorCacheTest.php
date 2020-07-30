@@ -2,7 +2,7 @@
 /**
  * Matomo - free/libre analytics platform
  *
- * @link https://matomo.org
+ * @link    https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 
@@ -38,7 +38,8 @@ class DeviceDetectorCacheTest extends SystemTestCase
         );
 
         $apiToTest   = array();
-        $apiToTest[] = array($api,
+        $apiToTest[] = array(
+            $api,
             array(
                 'idSite'     => 1,
                 'date'       => self::$fixture->dateTime,
