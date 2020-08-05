@@ -1,5 +1,8 @@
 ## Changelog
 
+3.1.0
+- Changed how this command works. It now requires a configuration.
+
 3.0.3
 - Add more cache entries
 
