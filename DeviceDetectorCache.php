@@ -8,9 +8,6 @@
 
 namespace Piwik\Plugins\DeviceDetectorCache;
 
-use DeviceDetector\DeviceDetector;
-use Piwik\DeviceDetector\DeviceDetectorFactory;
-
 class DeviceDetectorCache extends \Piwik\Plugin
 {
 
@@ -19,19 +16,10 @@ class DeviceDetectorCache extends \Piwik\Plugin
         return true;
     }
 
-    public static function writeToCache($userAgentStr, DeviceDetector $device)
+    public function install()
     {
-        $userAgentStr = DeviceDetectorFactory::getNormalizedUserAgent($userAgentStr);
-        $outputArray = array(
-            'bot' => $device->getBot(),
-            'brand' => $device->getBrand(),
-            'client' => $device->getClient(),
-            'device' => $device->getDevice(),
-            'model' => $device->getModel(),
-            'os' => $device->getOs()
-        );
-        $outputPath = DeviceDetectorCacheEntry::getCachePath($userAgentStr, true);
-        $content = "<?php return " . var_export($outputArray, true) . ";";
-        file_put_contents($outputPath, $content, LOCK_EX);
+        $config = new Configuration();
+        $config->install();
     }
+
 }

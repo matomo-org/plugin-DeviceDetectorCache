@@ -6,26 +6,25 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 
-namespace Piwik\Tests\Unit;
+namespace Piwik\Plugins\DeviceDetectorCache\tests\Unit;
 
 use Piwik\DeviceDetector\DeviceDetectorFactory;
-use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
-use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheFactory;
+use Piwik\Filesystem;
+use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
+use Piwik\Plugins\DeviceDetectorCache\Factory;
 
 class DeviceDetectorCacheFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
         DeviceDetectorFactory::clearInstancesCache();
-        DeviceDetectorCacheEntry::setCacheDir('/testcache/');
+        CachedEntry::setCacheDir(__DIR__ . '/testcache/');
     }
 
     public function tearDown()
     {
-        DeviceDetectorCacheEntry::clearCacheDir();
-        if (file_exists(DeviceDetectorCacheEntry::getCacheDir())) {
-            rmdir(DeviceDetectorCacheEntry::getCacheDir());
-        }
+        CachedEntry::clearCacheDir();
+        Filesystem::unlinkRecursive(CachedEntry::getCacheDir(), true);
     }
 
     public function testGetInstanceFromCache()
@@ -45,11 +44,11 @@ class DeviceDetectorCacheFactoryTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $this->writeFile($expected, $userAgent);
+        self::writeFakeFile($expected, $userAgent);
 
-        $factory = new DeviceDetectorCacheFactory();
+        $factory = new Factory();
         $deviceDetection = $factory->makeInstance($userAgent);
-        $this->assertInstanceOf("\Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry", $deviceDetection);
+        $this->assertInstanceOf(CachedEntry::class, $deviceDetection);
         $this->assertEquals(null, $deviceDetection->getBot());
         $this->assertEquals('Cooper', $deviceDetection->getBrand());
         $this->assertEquals($expected['client'], $deviceDetection->getClient());
@@ -78,7 +77,7 @@ class DeviceDetectorCacheFactoryTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $factory = new DeviceDetectorCacheFactory();
+        $factory = new Factory();
         $deviceDetection = $factory->makeInstance($userAgent);
         $this->assertInstanceOf("\DeviceDetector\DeviceDetector", $deviceDetection);
         $this->assertEquals(null, $deviceDetection->getBot());
@@ -89,9 +88,9 @@ class DeviceDetectorCacheFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected['os'], $deviceDetection->getOs());
     }
 
-    private function writeFile($expected, $userAgent)
+    public static function writeFakeFile($expected, $userAgent)
     {
-        $filePath = DeviceDetectorCacheEntry::getCachePath($userAgent, true);
+        $filePath = CachedEntry::getCachePath($userAgent, true);
         $content = "<?php return " . var_export($expected, true) . ";";
         file_put_contents($filePath, $content, LOCK_EX);
     }

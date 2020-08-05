@@ -10,30 +10,47 @@ By default, Matomo runs thousands of regular expressions for each tracking reque
 
 This plugin changes this by first looking if a cached result exists for the particular user agent and if so, directly loads the result from the file system.
 
-We recommend this plugin only if you have a high traffic website. Depending on your server it may save you a few ms per tracking request (say 5ms which may be say 10% of the total tracking request time).
+We recommend this plugin only if you have a very high traffic website (> 200M requests a month). Depending on your server it may save you a few ms per tracking request (say 5ms which may be say 10% of the total tracking request time).
 
 If you have not that much traffic, the overhead might not be worth it.
 
-Note: We are caching here the user agents that are commonly used on our website. Depending on your target group the used user agents may differ and you may benefit less from this cache.
+### How to set it up
 
-Note: There is no write permission needed for the caching directory as the cached user agents are already shipped with the plugin and there are no cache entries created on demand during a tracking request.
+#### Config setup
 
-## Developer
-
-### Caching user agents
+Configure these values in your `config/config.ini.php`
 
 ```
-./console device-detector-cache:warmup file1.csv
+[DeviceDetectorCache]
+access_log_path = "/var/log/httpd/access_log" # The path to your access log file. This command needs to have read permission for this file
+access_log_regex = "/^(\S+) (\S+) (\S+) \[([^:]+):(\d+:\d+:\d+) ([^\]]+)\] \"(\S+) (.*?) (\S+)\" (\S+) (\S+) "([^"]*)" "([^"]*)"$/" # the regex used to extract the user agent
+regex_match_entry = 14 # defines which subpattern of the abovce regex matches the user agent
+num_cache_entries = 200000 # how many user agents should be cached. This value basically depends on your memory and disk space. Likely there is no need to change this
 ```
 
-Where file1.csv is a CSV file that contains the user agent in the first column.
+#### Testing if it works
 
-By default all user agents will be added to the list of user agents unless you pass the option `--clear` which removes
-all previously cached user agents.
+Run this command to see if it works:
 
-Note: If you add user agents to the cache yourself, they will be overwritten the next time you update the plugin.
+```
+php /path/to/matomo/console device-detector-cache:warm-cache -vvv
+```
 
-**Please don't create issues or pull requests regarding caching specific user agents. We will frequently clear the list of cached user agents and add new ones.**
+It should show how many user agents were detected and should print the top 10 most commonly found user agents if things are configured correctly. 
+
+Cached files will be stored in `/tmp/devicecache/`. Make sure there is write access for this folder. Every time this command runs previously created cache entries will be deleted.
+
+#### Set up a cronjob
+
+If above test goes well you need to set up a cronjob that runs regularly (eg every few hours or days) to update the cached entries based on the access log.
+
+The cronjob needs to look like for example like this:
+
+```
+0 8 * * * php /path/to/matomo/console device-detector-cache:warm-cache
+```
+
+If you have multiple servers, you need to set up the command on every server that processes tracking requests.
 
 ## Credits
 
