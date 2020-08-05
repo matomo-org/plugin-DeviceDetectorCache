@@ -1,141 +1,133 @@
 <?php
-/**
- * Matomo - free/libre analytics platform
- *
- * @link https://matomo.org
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- */
-
 namespace Piwik\Plugins\DeviceDetectorCache\Commands;
 
-use Piwik\DeviceDetector\DeviceDetectorFactory;
-use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCache;
-use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugin\ConsoleCommand;
-use Symfony\Component\Console\Input\InputArgument;
+use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
+use Piwik\Plugins\DeviceDetectorCache\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class WarmDeviceDetectorCache extends ConsoleCommand
 {
-    const COMMAND_NAME = 'device-detector-cache:warmup';
+    const COMMAND_NAME = 'device-detector-cache:warm-cache';
+    /**
+     * @var Configuration
+     */
+    private $config;
 
-    const OPTION_INPUT_FILE = 'input-file';
-    const OPTION_SKIP_HEADER = 'skip-header-row';
-    const OPTION_ROWS_TO_PROCESS = 'count';
-    const OPTION_CLEAR_EXISTING_CACHE = 'clear';
-
-    private static $userAgentsPatternsToIgnore = array(
-        '/Amazon-Route53-Health-Check-Service[.]*/'
-    );
-
-    private $numCacheEntriesWritten = 0;
+    public function __construct($name = null)
+    {
+        parent::__construct($name);
+        $this->config = StaticContainer::get(Configuration::class);
+    }
 
     protected function configure()
     {
         $this->setName(self::COMMAND_NAME);
-        $this->setDescription(
-            'Populate the device detector cache with commonly used useragent strings, as provided in the input file.');
-        $this->addArgument(self::OPTION_INPUT_FILE, InputArgument::REQUIRED, 
-            'CSV file containing list of useragents to include');
-        $this->addOption(
-            self::OPTION_ROWS_TO_PROCESS,
-            null,
-            InputOption::VALUE_OPTIONAL,
-            'Number of rows to process',
-            0
-        );
-        $this->addOption(
-            self::OPTION_SKIP_HEADER,
-            null,
-            InputOption::VALUE_OPTIONAL,
-            'Whether to skip the first row',
-            true);
-        $this->addOption(
-            self::OPTION_CLEAR_EXISTING_CACHE,
-            null,
-            InputOption::VALUE_NONE,
-            'Whether to clear existing entries from the cache');
+        $this->setDescription('Cached device detector information based on access log');
+    }
+
+    private function printupdate($count, OutputInterface $output)
+    {
+        if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $mem = round(memory_get_peak_usage() / 1024 / 1024);
+            $output->writeln("Count: " . $count . ' Mem:' . $mem . 'MB');
+        }
+    }
+
+    private function log($message, OutputInterface $output)
+    {
+        if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $mem = round(memory_get_peak_usage() / 1024 / 1024);
+            $output->writeln($message . ' Mem:' . $mem . 'MB');
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption(self::OPTION_CLEAR_EXISTING_CACHE)) {
-            DeviceDetectorCacheEntry::clearCacheDir();
+        $userAgents = array();
+
+        $regex = $this->config->getAccessLogRegex();
+        $numEntriesToCache = $this->config->getNumEntriesToCache();
+        $matchEntry = $this->config->getRegexMatchEntry();
+        $path = $this->config->getAccessLogPath();
+
+        if (!file_exists($path)) {
+            throw new \Exception('Configured access log path does not exist: ' . $path);
         }
 
-        $inputFile = $this->openFile(
-            $input->getArgument(self::OPTION_INPUT_FILE), 
-            $input->getOption(self::OPTION_SKIP_HEADER)
-        );
+        $this->log('caching up to ' . $numEntriesToCache . ' entries', $output);
+        $this->log('reading from file ' . $path, $output);
+        $this->log('used regex ' . $regex . ' with index ' . $matchEntry, $output);
 
-        $maxRowsToProcess = (int)$input->getOption(self::OPTION_ROWS_TO_PROCESS);
-        $counter = 0;
-
-        try {
-            while ($data = fgetcsv($inputFile)) {
-                $counter++;
-                if ($maxRowsToProcess > 0 && $counter > $maxRowsToProcess) {
-                    break;
+        $numLinesToProcess = 5000000;
+        $numLinesProcessed = 0;
+        $handle = fopen($path, "r");
+        if ($handle) {
+            while (($line = fgets($handle)) !== false) {
+                $numLinesProcessed++;
+                if ($numLinesProcessed >= $numLinesToProcess) {
+                    break;// we read max 5M lines to prevent in running for too long time
                 }
-
-                $this->processUserAgent($data[0]);
+                if (empty($line)) {
+                    continue;
+                }
+                preg_match($regex ,$line, $matches);
+                if (!empty($matches[$matchEntry])
+                    && strlen($matches[$matchEntry]) > 5
+                    && strlen($matches[$matchEntry]) < 700){
+                    $useragent = $matches[$matchEntry];
+                    if (!isset($userAgents[$useragent])) {
+                        $userAgents[$useragent] = 1;
+                        $count = count($userAgents);
+                        if ($count % 10000 === 0) {
+                            $this->printupdate($count, $output);
+                        }
+                    } else {
+                        $userAgents[$useragent] = $userAgents[$useragent] + 1;
+                    }
+                }
+                $line = null;unset($line);
+                $matches = null;unset($matches);
+                usleep(30); // slightly slow down disk usage to avoid running eg into some EBS limit
             }
-        } finally {
-            fclose($inputFile);
-        }
-        $output->writeln("Written " . $this->numCacheEntriesWritten . " cache entries to file");
-    }
 
-    private function openFile($filePath, $skipFirstRow)
-    {
-        if (! file_exists($filePath)) {
-            throw new \Exception("File $filePath not found");
-        }
-        $inputHandle = fopen($filePath, 'r');
-        if ($inputHandle === false) {
-            throw new \Exception("Could not open $filePath");
+            fclose($handle);
+        } else {
+            throw new \Exception('Error opening file. Maybe no read permission? Path: ' . $path);
         }
 
-        // Skip the first row
-        if ($skipFirstRow) {
-            fgetcsv($inputHandle);
-        }
-        return $inputHandle;
-    }
+        $this->log("parsed file", $output);
+        $this->printupdate($count, $output);
 
-    private function isValidUserAgentString($userAgent)
-    {
-        $matches = array();
-        foreach (self::$userAgentsPatternsToIgnore as $pattern) {
-            preg_match($pattern, $userAgent,   $matches);
-            if ($matches) {
-                return false;
-            }
-        }
+        arsort($userAgents, SORT_NATURAL);
 
-        $parts = explode($userAgent, ' ');
-        foreach ($parts as $part) {
-            if (filter_var($part, FILTER_VALIDATE_IP) !== false) {
-                return false;
-            }
-        }
+        $this->printupdate($count, $output);
+        $i = 0;
 
-        return true;
-    }
-
-    private function processUserAgent($userAgentStr)
-    {
-        $userAgentStr = trim(trim($userAgentStr, '"'));
-        if (!$this->isValidUserAgentString($userAgentStr)) {
+        if (empty($userAgents)) {
+            $output->writeln('No user agents found');
             return;
         }
 
-        $factory = new DeviceDetectorFactory();
-        $deviceDetector = $factory->makeInstance($userAgentStr);
-
-        DeviceDetectorCache::writeToCache($userAgentStr, $deviceDetector);
-        $this->numCacheEntriesWritten++;
+        $this->log("writing files", $output);
+        CachedEntry::clearCacheDir();
+        foreach ($userAgents as $agent => $val) {
+            if ($i >= $numEntriesToCache) {
+                break;
+            }
+            $this->log("writing files", $output);
+            $i++;
+            if ($i % 10000 === 0) {
+                $this->printupdate($i, $output);
+            }
+            if ($i <= 10) {
+                $this->log('Found user agent '. $agent . ' count: '. $val, $output);
+            }
+            CachedEntry::writeToCache($agent);
+        }
+        $output->writeln('Written '.$i.' cache entries to file');
     }
+
 }

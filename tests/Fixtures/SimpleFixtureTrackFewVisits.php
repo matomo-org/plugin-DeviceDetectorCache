@@ -9,8 +9,8 @@ namespace Piwik\Plugins\DeviceDetectorCache\tests\Fixtures;
 
 use Piwik\Date;
 use Piwik\DeviceDetector\DeviceDetectorFactory;
-use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCache;
-use Piwik\Plugins\DeviceDetectorCache\DeviceDetectorCacheEntry;
+use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
+use Piwik\Plugins\DeviceDetectorCache\tests\Unit\DeviceDetectorCacheFactoryTest;
 use Piwik\Tests\Framework\Fixture;
 
 /**
@@ -43,24 +43,33 @@ class SimpleFixtureTrackFewVisits extends Fixture
      */
     private function setupCache()
     {
-        $device2CacheFile = DeviceDetectorCacheEntry::getCachePath($this->userAgent2);
+        $device2CacheFile = CachedEntry::getCachePath($this->userAgent2);
 
         if (file_exists($device2CacheFile)) {
             $this->revertFileAfter = true;
         }
-
-        $factory = new DeviceDetectorFactory();
-        $device1 = $factory->makeInstance($this->userAgent1);
-        DeviceDetectorCache::writeToCache($this->userAgent2, $device1);
+        $expected = array(
+            'bot' => null,
+            'brand' => 'Cooper',
+            'client' => array(
+                'type' => 'browser',
+                'name' => 'Microsoft Edge'
+            ),
+            'device' => 1,
+            'model' => 'iPhone',
+            'os' => array(
+                'name' => 'Linux'
+            )
+        );
+        //user agent 2 should detect an iphone even though it is not as it's read from cache
+        DeviceDetectorCacheFactoryTest::writeFakeFile($expected, $this->userAgent2);
     }
 
     public function tearDown()
     {
         // empty
         if ($this->revertFileAfter) {
-            $factory = new DeviceDetectorFactory();
-            $device2 = $factory->makeInstance($this->userAgent1);
-            DeviceDetectorCache::writeToCache($this->userAgent2, $device2);
+            CachedEntry::writeToCache($this->userAgent2);
         }
     }
 
@@ -76,7 +85,6 @@ class SimpleFixtureTrackFewVisits extends Fixture
     {
         $t = self::getTracker($this->idSite, $this->dateTime, $defaultInit = true);
         $t->setIp('56.11.55.73');
-        // We track with useragent2 (Windows) but expect to see data for useragent1 (Apple)
         $t->setUserAgent($this->userAgent2);
 
         $t->setForceVisitDateTime(Date::factory($this->dateTime)->addHour(0.1)->getDatetime());
@@ -90,5 +98,13 @@ class SimpleFixtureTrackFewVisits extends Fixture
         $t->setForceVisitDateTime(Date::factory($this->dateTime)->addHour(0.3)->getDatetime());
         $t->addEcommerceItem($sku = 'SKU_ID2', $name = 'A durable item', $category = 'Best seller', $price = 321);
         self::checkResponse($t->doTrackEcommerceCartUpdate($grandTotal = 33 * 77));
+
+        $t = self::getTracker($this->idSite, $this->dateTime, $defaultInit = true);
+        $t->setIp('56.11.55.74');
+        $t->setUserAgent($this->userAgent1);
+
+        $t->setForceVisitDateTime(Date::factory($this->dateTime)->addHour(0.1)->getDatetime());
+        $t->setUrl('http://example.com/sub/page2');
+        self::checkResponse($t->doTrackPageView('Viewing homepage2'));
     }
 }
