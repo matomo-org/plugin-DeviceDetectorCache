@@ -58,6 +58,11 @@ class WarmDeviceDetectorCache extends ConsoleCommand
         $this->log('reading from file ' . $path, $output);
         $this->log('used regex ' . $regex . ' with index ' . $matchEntry, $output);
 
+        if (empty($numEntriesToCache)) {
+            $output->writeln('No entries are supposed to be cached. Stopping command');
+            return;
+        }
+
         if (!file_exists($path)) {
             throw new \Exception('Configured access log path does not exist: "' . $path . '"');
         }
