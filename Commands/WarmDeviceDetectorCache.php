@@ -65,6 +65,8 @@ class WarmDeviceDetectorCache extends ConsoleCommand
         $numLinesToProcess = 5000000;
         $numLinesProcessed = 0;
         $handle = fopen($path, "r");
+        $count = 0;
+
         if ($handle) {
             while (($line = fgets($handle)) !== false) {
                 $numLinesProcessed++;
