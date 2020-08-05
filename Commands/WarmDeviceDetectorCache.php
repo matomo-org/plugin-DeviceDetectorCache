@@ -125,10 +125,9 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             if ($i >= $numEntriesToCache) {
                 break;
             }
-            $this->log("writing files", $output);
             $i++;
             if ($i % 10000 === 0) {
-                $this->printupdate($i, $output);
+                $this->printupdate('written files so far: ' . $i, $output);
             }
             if ($i <= 10) {
                 $this->log('Found user agent '. $agent . ' count: '. $val, $output);
