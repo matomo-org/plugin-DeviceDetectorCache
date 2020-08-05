@@ -1,5 +1,11 @@
 ## Changelog
 
+4.1.0
+- Changed how this command works. It now requires a configuration.
+
+4.0.0
+- Compatibility with Matomo 4.X
+
 3.1.0
 - Changed how this command works. It now requires a configuration.
 
