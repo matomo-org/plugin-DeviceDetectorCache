@@ -65,7 +65,7 @@ class SimpleFixtureTrackFewVisits extends Fixture
         DeviceDetectorCacheFactoryTest::writeFakeFile($expected, $this->userAgent2);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // empty
         if ($this->revertFileAfter) {
