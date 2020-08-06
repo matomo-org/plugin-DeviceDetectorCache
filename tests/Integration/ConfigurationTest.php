@@ -32,7 +32,7 @@ class ConfigurationTest extends IntegrationTestCase
      */
     private $configuration;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

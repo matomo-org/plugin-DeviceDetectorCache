@@ -8,20 +8,21 @@
 
 namespace Piwik\Plugins\DeviceDetectorCache\tests\Unit;
 
+use PHPUnit\Framework\TestCase;
 use Piwik\DeviceDetector\DeviceDetectorFactory;
 use Piwik\Filesystem;
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
 use Piwik\Plugins\DeviceDetectorCache\Factory;
 
-class DeviceDetectorCacheFactoryTest extends \PHPUnit_Framework_TestCase
+class DeviceDetectorCacheFactoryTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         DeviceDetectorFactory::clearInstancesCache();
         CachedEntry::setCacheDir(__DIR__ . '/testcache/');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         CachedEntry::clearCacheDir();
         Filesystem::unlinkRecursive(CachedEntry::getCacheDir(), true);

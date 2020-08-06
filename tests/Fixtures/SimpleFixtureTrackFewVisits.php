@@ -28,7 +28,7 @@ class SimpleFixtureTrackFewVisits extends Fixture
 
     private $revertFileAfter = false;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->setupCache();
         $this->setUpWebsite();
