@@ -10,6 +10,7 @@
 namespace Piwik\Plugins\DeviceDetectorCache;
 
 use DeviceDetector\DeviceDetector;
+use Piwik\Container\StaticContainer;
 use Piwik\DeviceDetector\DeviceDetectorFactory;
 use Piwik\Filesystem;
 use Piwik\Plugin\Manager;
@@ -17,6 +18,7 @@ use Piwik\Plugin\Manager;
 class CachedEntry extends DeviceDetector
 {
     private static $CACHE_DIR = '';
+    private static $cache = null;
 
     public function __construct($userAgent, $values)
     {
@@ -47,15 +49,25 @@ class CachedEntry extends DeviceDetector
     public static function writeToCache($userAgent)
     {
         $userAgent = DeviceDetectorFactory::getNormalizedUserAgent($userAgent);
-        $factory = new DeviceDetectorFactory();
-        $device = $factory->makeInstance($userAgent);
+
+        if (empty(self::$cache)) {
+            self::$cache = StaticContainer::get('DeviceDetector\Cache\Cache');
+        }
+
+        // we don't use device detector factory because this way we can cache the cache instance and
+        // lower memory since the factory would store an instance of every user agent in a static variable
+        $deviceDetector = new DeviceDetector($userAgent);
+        $deviceDetector->discardBotInformation();
+        $deviceDetector->setCache(self::$cache);
+        $deviceDetector->parse();
+
         $outputArray = array(
-            'bot' => $device->getBot(),
-            'brand' => $device->getBrand(),
-            'client' => $device->getClient(),
-            'device' => $device->getDevice(),
-            'model' => $device->getModel(),
-            'os' => $device->getOs()
+            'bot' => $deviceDetector->getBot(),
+            'brand' => $deviceDetector->getBrand(),
+            'client' => $deviceDetector->getClient(),
+            'device' => $deviceDetector->getDevice(),
+            'model' => $deviceDetector->getModel(),
+            'os' => $deviceDetector->getOs()
         );
         $outputPath = self::getCachePath($userAgent, true);
         $content = "<?php return " . var_export($outputArray, true) . ";";
@@ -90,10 +102,10 @@ class CachedEntry extends DeviceDetector
 
     public static function getCacheDir()
     {
-        if (self::$CACHE_DIR) {
-            return self::$CACHE_DIR;
+        if (empty(self::$CACHE_DIR)) {
+            self::$CACHE_DIR = rtrim(PIWIK_DOCUMENT_ROOT, '/') . '/tmp/devicecache/';
         }
-        return rtrim(PIWIK_DOCUMENT_ROOT, '/') . '/tmp/devicecache/';
+        return self::$CACHE_DIR;
     }
 
     public static function clearCacheDir()
