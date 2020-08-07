@@ -17,7 +17,7 @@ use Piwik\Filesystem;
 class CachedEntry extends DeviceDetector
 {
     private static $CACHE_DIR = '';
-    private static $cache = null;
+    private static $customCache = null;
 
     public function __construct($userAgent, $values)
     {
@@ -48,15 +48,15 @@ class CachedEntry extends DeviceDetector
     public static function writeToCache($userAgent)
     {
         $userAgent   = DeviceDetectorFactory::getNormalizedUserAgent($userAgent);
-        if (empty(self::$cache)) {
-            self::$cache = StaticContainer::get('DeviceDetector\Cache\Cache');
+        if (empty(self::$customCache)) {
+            self::$customCache = StaticContainer::get('DeviceDetector\Cache\Cache');
         }
 
         // we don't usedevice      detector factory because this way we can cache the cache instance and
         // lower memory since the factory would store an instance of every user agent in a static variable
         $deviceDetector = new DeviceDetector($userAgent);
         $deviceDetector->discardBotInformation();
-        $deviceDetector->setCache(self::$cache);
+        $deviceDetector->setCache(self::$customCache);
         $deviceDetector->parse();
 
         $outputArray = [
