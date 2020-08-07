@@ -5,7 +5,7 @@
 		<idVisit>1</idVisit>
 		<visitIp>56.11.55.73</visitIp>
 		
-		<fingerprint>d3f956ff599755c5</fingerprint>
+		<fingerprint>2de13bb81a7e2133</fingerprint>
 		<actionDetails>
 			<row>
 				<type>action</type>
@@ -15,14 +15,16 @@
 				
 				
 				<pageId>1</pageId>
+				<bandwidth />
 				<timeSpent>360</timeSpent>
 				<timeSpentPretty>6 min 0s</timeSpentPretty>
-				<interactionPosition>1</interactionPosition>
+				<pageviewPosition>1</pageviewPosition>
 				<title>Viewing homepage</title>
 				<subtitle>http://example.com/sub/page</subtitle>
 				<icon />
 				<iconSVG>plugins/Morpheus/images/action.svg</iconSVG>
 				
+				<bandwidth_pretty>0 M</bandwidth_pretty>
 			</row>
 			<row>
 				<type>search</type>
@@ -31,15 +33,19 @@
 				
 				
 				<pageId>2</pageId>
+				<bandwidth />
 				<timeSpent>361</timeSpent>
 				<timeSpentPretty>6 min 1s</timeSpentPretty>
 				<siteSearchKeyword>this is a site search query</siteSearchKeyword>
-				<interactionPosition>2</interactionPosition>
+				<siteSearchCategory />
+				<siteSearchCount />
+				<pageviewPosition>2</pageviewPosition>
 				<icon>plugins/Morpheus/images/search.png</icon>
 				<iconSVG>plugins/Morpheus/images/search.svg</iconSVG>
 				<title>Site Search</title>
 				<subtitle>this is a site search query</subtitle>
 				
+				<bandwidth_pretty>0 M</bandwidth_pretty>
 			</row>
 			<row>
 				<type>ecommerceAbandonedCart</type>
@@ -89,7 +95,9 @@
 		<visitEcommerceStatus>abandonedCart</visitEcommerceStatus>
 		<visitEcommerceStatusIcon>plugins/Morpheus/images/ecommerceAbandonedCart.svg</visitEcommerceStatusIcon>
 		<daysSinceFirstVisit>0</daysSinceFirstVisit>
+		<secondsSinceFirstVisit>0</secondsSinceFirstVisit>
 		<daysSinceLastEcommerceOrder>0</daysSinceLastEcommerceOrder>
+		<secondsSinceLastEcommerceOrder />
 		<visitDuration>721</visitDuration>
 		<visitDurationPretty>12 min 1s</visitDurationPretty>
 		<searches>1</searches>
@@ -107,22 +115,22 @@
 		<referrerSocialNetworkIcon />
 		<languageCode>fr</languageCode>
 		<language>French</language>
-		<deviceType>Smartphone</deviceType>
-		<deviceTypeIcon>plugins/Morpheus/icons/dist/devices/smartphone.png</deviceTypeIcon>
+		<deviceType>Desktop</deviceType>
+		<deviceTypeIcon>plugins/Morpheus/icons/dist/devices/desktop.png</deviceTypeIcon>
 		<deviceBrand>Unknown</deviceBrand>
-		<deviceModel>iPhone</deviceModel>
-		<operatingSystem>Unknown</operatingSystem>
-		<operatingSystemName>Unknown</operatingSystemName>
-		<operatingSystemIcon>plugins/Morpheus/icons/dist/os/UNK.png</operatingSystemIcon>
-		<operatingSystemCode>UNK</operatingSystemCode>
-		<operatingSystemVersion>UNK</operatingSystemVersion>
-		<browserFamily />
-		<browserFamilyDescription>Unknown</browserFamilyDescription>
-		<browser>Unknown</browser>
-		<browserName>Unknown</browserName>
-		<browserIcon>plugins/Morpheus/icons/dist/browsers/UNK.png</browserIcon>
-		<browserCode>UNK</browserCode>
-		<browserVersion />
+		<deviceModel>Generic Desktop</deviceModel>
+		<operatingSystem>Windows 7</operatingSystem>
+		<operatingSystemName>Windows</operatingSystemName>
+		<operatingSystemIcon>plugins/Morpheus/icons/dist/os/WIN.png</operatingSystemIcon>
+		<operatingSystemCode>WIN</operatingSystemCode>
+		<operatingSystemVersion>7</operatingSystemVersion>
+		<browserFamily>Blink</browserFamily>
+		<browserFamilyDescription>Blink (Chrome, Opera)</browserFamilyDescription>
+		<browser>Chrome 72.0</browser>
+		<browserName>Chrome</browserName>
+		<browserIcon>plugins/Morpheus/icons/dist/browsers/CH.png</browserIcon>
+		<browserCode>CH</browserCode>
+		<browserVersion>72.0</browserVersion>
 		<totalEcommerceRevenue>0</totalEcommerceRevenue>
 		<totalEcommerceConversions>0</totalEcommerceConversions>
 		<totalEcommerceItems>0</totalEcommerceItems>
@@ -144,8 +152,7 @@
 		<visitLocalTime>12:34:06</visitLocalTime>
 		<visitLocalHour>12</visitLocalHour>
 		<daysSinceLastVisit>0</daysSinceLastVisit>
-		<customVariables>
-		</customVariables>
+		<secondsSinceLastVisit>0</secondsSinceLastVisit>
 		<resolution>1024x768</resolution>
 		<plugins>cookie, flash, java</plugins>
 		<pluginsIcons>
@@ -162,6 +169,8 @@
 				<pluginName>java</pluginName>
 			</row>
 		</pluginsIcons>
+		<customVariables>
+		</customVariables>
 	</row>
 	<row>
 		<idSite>1</idSite>
@@ -178,12 +187,14 @@
 				
 				
 				<pageId>3</pageId>
-				<interactionPosition>1</interactionPosition>
+				<bandwidth />
+				<pageviewPosition>1</pageviewPosition>
 				<title>Viewing homepage2</title>
 				<subtitle>http://example.com/sub/page2</subtitle>
 				<icon />
 				<iconSVG>plugins/Morpheus/images/action.svg</iconSVG>
 				
+				<bandwidth_pretty>0 M</bandwidth_pretty>
 			</row>
 		</actionDetails>
 		<goalConversions>0</goalConversions>
@@ -209,7 +220,9 @@
 		<visitEcommerceStatus>none</visitEcommerceStatus>
 		<visitEcommerceStatusIcon />
 		<daysSinceFirstVisit>0</daysSinceFirstVisit>
+		<secondsSinceFirstVisit>0</secondsSinceFirstVisit>
 		<daysSinceLastEcommerceOrder>0</daysSinceLastEcommerceOrder>
+		<secondsSinceLastEcommerceOrder />
 		<visitDuration>0</visitDuration>
 		<visitDurationPretty>0s</visitDurationPretty>
 		<searches>0</searches>
@@ -264,8 +277,7 @@
 		<visitLocalTime>12:34:06</visitLocalTime>
 		<visitLocalHour>12</visitLocalHour>
 		<daysSinceLastVisit>0</daysSinceLastVisit>
-		<customVariables>
-		</customVariables>
+		<secondsSinceLastVisit>0</secondsSinceLastVisit>
 		<resolution>1024x768</resolution>
 		<plugins>cookie, flash, java</plugins>
 		<pluginsIcons>
@@ -282,5 +294,7 @@
 				<pluginName>java</pluginName>
 			</row>
 		</pluginsIcons>
+		<customVariables>
+		</customVariables>
 	</row>
 </result>

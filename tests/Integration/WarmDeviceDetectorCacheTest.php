@@ -12,13 +12,13 @@ use Piwik\Tests\Framework\TestCase\ConsoleCommandTestCase;
 
 class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         CachedEntry::setCacheDir(__DIR__ . '/testcache/');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         CachedEntry::clearCacheDir();
