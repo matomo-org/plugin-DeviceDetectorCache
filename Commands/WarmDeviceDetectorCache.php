@@ -99,6 +99,9 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                 $line = null;unset($line);
                 $matches = null;unset($matches);
                 usleep(30); // slightly slow down disk usage to avoid running eg into some EBS limit
+                if ($numLinesProcessed % 1000 === 0) {
+                    usleep(10000); // every 10K lines sleep for a 10ms to not max out CPU as much
+                }
             }
 
             fclose($handle);
@@ -126,13 +129,17 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                 break;
             }
             $i++;
-            if ($i % 10000 === 0) {
+            if ($i % 5000 === 0) {
                 $this->printupdate('written files so far: ' . $i, $output);
             }
             if ($i <= 10) {
                 $this->log('Found user agent '. $agent . ' count: '. $val, $output);
             }
             CachedEntry::writeToCache($agent);
+            usleep(2000);
+            // sleep 2ms to let CPU do something else
+            // this will make things about 7m slower for 200K entries but at least sudden CPU increase for instance
+            // can be prevented when there are only few CPUs available
         }
         $output->writeln('Written '.$i.' cache entries to file');
     }
