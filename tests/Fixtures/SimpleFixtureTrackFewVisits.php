@@ -1,14 +1,16 @@
 <?php
 /**
- * Piwik - free/libre analytics platform
+ * Matomo - free/libre analytics platform
  *
- * @link    http://piwik.org
+ * @link    https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\DeviceDetectorCache\tests\Fixtures;
 
 use Piwik\Date;
 use Piwik\DeviceDetector\DeviceDetectorFactory;
+use Piwik\Filesystem;
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
 use Piwik\Plugins\DeviceDetectorCache\tests\Unit\DeviceDetectorCacheFactoryTest;
 use Piwik\Tests\Framework\Fixture;
@@ -26,8 +28,6 @@ class SimpleFixtureTrackFewVisits extends Fixture
     private $userAgent1 = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
     private $userAgent2 = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36';
 
-    private $revertFileAfter = false;
-
     public function setUp(): void
     {
         $this->setupCache();
@@ -43,34 +43,35 @@ class SimpleFixtureTrackFewVisits extends Fixture
      */
     private function setupCache()
     {
-        $device2CacheFile = CachedEntry::getCachePath($this->userAgent2);
-
-        if (file_exists($device2CacheFile)) {
-            $this->revertFileAfter = true;
-        }
-        $expected = array(
-            'bot' => null,
-            'brand' => 'Cooper',
-            'client' => array(
-                'type' => 'browser',
-                'name' => 'Microsoft Edge'
-            ),
+        $expected = [
+            'bot'    => null,
+            'brand'  => 'FL',
+            'client' => [
+                'type'           => 'browser',
+                'name'           => 'Microsoft Edge',
+                'short_name'     => 'PS',
+                'version'        => '33.0',
+                'engine'         => 'Gecko',
+                'engine_version' => '',
+            ],
             'device' => 1,
-            'model' => 'iPhone',
-            'os' => array(
-                'name' => 'Linux'
-            )
-        );
+            'model'  => 'iPhone',
+            'os'     => [
+                'name'       => 'GNU/Linux',
+                'short_name' => 'LIN',
+                'version'    => '10.10',
+                'platform'   => '',
+            ],
+        ];
         //user agent 2 should detect an iphone even though it is not as it's read from cache
+        CachedEntry::setCacheDir(PIWIK_DOCUMENT_ROOT. '/tmp/devicecachetests/');
         DeviceDetectorCacheFactoryTest::writeFakeFile($expected, $this->userAgent2);
     }
 
     public function tearDown(): void
     {
-        // empty
-        if ($this->revertFileAfter) {
-            CachedEntry::writeToCache($this->userAgent2);
-        }
+        CachedEntry::clearCacheDir();
+        Filesystem::unlinkRecursive(CachedEntry::getCacheDir(), true);
     }
 
     private function setUpWebsite()

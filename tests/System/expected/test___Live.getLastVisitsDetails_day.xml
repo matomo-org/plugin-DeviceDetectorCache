@@ -5,7 +5,7 @@
 		<idVisit>1</idVisit>
 		<visitIp>56.11.55.73</visitIp>
 		
-		<fingerprint>2de13bb81a7e2133</fingerprint>
+		<fingerprint>d6c0d9b7448ddef6</fingerprint>
 		<actionDetails>
 			<row>
 				<type>action</type>
@@ -115,22 +115,22 @@
 		<referrerSocialNetworkIcon />
 		<languageCode>fr</languageCode>
 		<language>French</language>
-		<deviceType>Desktop</deviceType>
-		<deviceTypeIcon>plugins/Morpheus/icons/dist/devices/desktop.png</deviceTypeIcon>
-		<deviceBrand>Unknown</deviceBrand>
-		<deviceModel>Generic Desktop</deviceModel>
-		<operatingSystem>Windows 7</operatingSystem>
-		<operatingSystemName>Windows</operatingSystemName>
-		<operatingSystemIcon>plugins/Morpheus/icons/dist/os/WIN.png</operatingSystemIcon>
-		<operatingSystemCode>WIN</operatingSystemCode>
-		<operatingSystemVersion>7</operatingSystemVersion>
-		<browserFamily>Blink</browserFamily>
-		<browserFamilyDescription>Blink (Chrome, Opera)</browserFamilyDescription>
-		<browser>Chrome 72.0</browser>
-		<browserName>Chrome</browserName>
-		<browserIcon>plugins/Morpheus/icons/dist/browsers/CH.png</browserIcon>
-		<browserCode>CH</browserCode>
-		<browserVersion>72.0</browserVersion>
+		<deviceType>Smartphone</deviceType>
+		<deviceTypeIcon>plugins/Morpheus/icons/dist/devices/smartphone.png</deviceTypeIcon>
+		<deviceBrand>Fly</deviceBrand>
+		<deviceModel>iPhone</deviceModel>
+		<operatingSystem>GNU/Linux 10.10</operatingSystem>
+		<operatingSystemName>GNU/Linux</operatingSystemName>
+		<operatingSystemIcon>plugins/Morpheus/icons/dist/os/LIN.png</operatingSystemIcon>
+		<operatingSystemCode>LIN</operatingSystemCode>
+		<operatingSystemVersion>10.10</operatingSystemVersion>
+		<browserFamily>Gecko</browserFamily>
+		<browserFamilyDescription>Gecko (Firefox)</browserFamilyDescription>
+		<browser>Microsoft Edge 33.0</browser>
+		<browserName>Microsoft Edge</browserName>
+		<browserIcon>plugins/Morpheus/icons/dist/browsers/PS.png</browserIcon>
+		<browserCode>PS</browserCode>
+		<browserVersion>33.0</browserVersion>
 		<totalEcommerceRevenue>0</totalEcommerceRevenue>
 		<totalEcommerceConversions>0</totalEcommerceConversions>
 		<totalEcommerceItems>0</totalEcommerceItems>

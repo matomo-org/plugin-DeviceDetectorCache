@@ -1,8 +1,8 @@
 <?php
 /**
- * Piwik - free/libre analytics platform
+ * Matomo - free/libre analytics platform
  *
- * @link https://matomo.org
+ * @link    https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 
@@ -33,19 +33,20 @@ class DeviceDetectorCacheTest extends SystemTestCase
 
     public function getApiForTesting()
     {
-        $api = array(
+        $api = [
             'Live.getLastVisitsDetails',
-        );
+        ];
 
-        $apiToTest   = array();
-        $apiToTest[] = array($api,
-            array(
+        $apiToTest   = [];
+        $apiToTest[] = [
+            $api,
+            [
                 'idSite'     => 1,
                 'date'       => self::$fixture->dateTime,
-                'periods'    => array('day'),
-                'testSuffix' => ''
-            )
-        );
+                'periods'    => ['day'],
+                'testSuffix' => '',
+            ],
+        ];
 
         return $apiToTest;
     }

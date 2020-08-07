@@ -2,7 +2,7 @@
 /**
  * Matomo - free/libre analytics platform
  *
- * @link https://matomo.org
+ * @link    https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
@@ -13,7 +13,6 @@ use DeviceDetector\DeviceDetector;
 use Piwik\Container\StaticContainer;
 use Piwik\DeviceDetector\DeviceDetectorFactory;
 use Piwik\Filesystem;
-use Piwik\Plugin\Manager;
 
 class CachedEntry extends DeviceDetector
 {
@@ -23,12 +22,12 @@ class CachedEntry extends DeviceDetector
     public function __construct($userAgent, $values)
     {
         parent::setUserAgent($userAgent);
-        $this->bot = $values['bot'];
-        $this->brand = $values['brand'];
+        $this->bot    = $values['bot'];
+        $this->brand  = $values['brand'];
         $this->client = $values['client'];
         $this->device = $values['device'];
-        $this->model = $values['model'];
-        $this->os = $values['os'];
+        $this->model  = $values['model'];
+        $this->os     = $values['os'];
     }
 
     public static function getCached($userAgent)
@@ -36,7 +35,7 @@ class CachedEntry extends DeviceDetector
         // we check if file exists and include the file here directly as it needs to be kind of atomic...
         // if we only checked if file exists, and then choose to use cached entry which would then include the file,
         // then there's a risk that between the file_exists and the include the cache file was removed
-        $path = self::getCachePath($userAgent);
+        $path   = self::getCachePath($userAgent);
         $exists = file_exists($path);
         if ($exists) {
             $values = @include($path);
@@ -48,40 +47,39 @@ class CachedEntry extends DeviceDetector
 
     public static function writeToCache($userAgent)
     {
-        $userAgent = DeviceDetectorFactory::getNormalizedUserAgent($userAgent);
-
+        $userAgent   = DeviceDetectorFactory::getNormalizedUserAgent($userAgent);
         if (empty(self::$cache)) {
             self::$cache = StaticContainer::get('DeviceDetector\Cache\Cache');
         }
 
-        // we don't use device detector factory because this way we can cache the cache instance and
+        // we don't usedevice      detector factory because this way we can cache the cache instance and
         // lower memory since the factory would store an instance of every user agent in a static variable
         $deviceDetector = new DeviceDetector($userAgent);
         $deviceDetector->discardBotInformation();
         $deviceDetector->setCache(self::$cache);
         $deviceDetector->parse();
 
-        $outputArray = array(
-            'bot' => $deviceDetector->getBot(),
-            'brand' => $deviceDetector->getBrand(),
+        $outputArray = [
+            'bot'    => $deviceDetector->getBot(),
+            'brand'  => $deviceDetector->getBrand(),
             'client' => $deviceDetector->getClient(),
             'device' => $deviceDetector->getDevice(),
-            'model' => $deviceDetector->getModel(),
-            'os' => $deviceDetector->getOs()
-        );
-        $outputPath = self::getCachePath($userAgent, true);
-        $content = "<?php return " . var_export($outputArray, true) . ";";
+            'model'  => $deviceDetector->getModel(),
+            'os'     => $deviceDetector->getOs(),
+        ];
+        $outputPath  = self::getCachePath($userAgent, true);
+        $content     = "<?php return " . var_export($outputArray, true) . ";";
         file_put_contents($outputPath, $content, LOCK_EX);
     }
 
     public static function getCachePath($userAgent, $createDirs = false)
     {
-        $userAgent = DeviceDetectorFactory::getNormalizedUserAgent($userAgent);
+        $userAgent       = DeviceDetectorFactory::getNormalizedUserAgent($userAgent);
         $hashedUserAgent = md5($userAgent);
 
         // We use hash subdirs so we don't have 1000s of files in the one dir
         $cacheDir = self::getCacheDir();
-        $hashDir = $cacheDir . substr($hashedUserAgent, 0, 3);
+        $hashDir  = $cacheDir . substr($hashedUserAgent, 0, 3);
 
         if ($createDirs) {
             if (!is_dir($cacheDir)) {

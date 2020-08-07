@@ -1,16 +1,9 @@
 <?php
 /**
- * Copyright (C) InnoCraft Ltd - All rights reserved.
+ * Matomo - free/libre analytics platform
  *
- * NOTICE:  All information contained herein is, and remains the property of InnoCraft Ltd.
- * The intellectual and technical concepts contained herein are protected by trade secret or copyright law.
- * Redistribution of this information or reproduction of this material is strictly forbidden
- * unless prior written permission is obtained from InnoCraft Ltd.
- *
- * You shall use this code only in accordance with the license agreement obtained from InnoCraft Ltd.
- *
- * @link https://www.innocraft.com/
- * @license For license details see https://www.innocraft.com/license
+ * @link    https://matomo.org
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 
 namespace Piwik\Plugins\DeviceDetectorCache;
@@ -36,7 +29,7 @@ class Configuration
         $config = $this->getConfig();
 
         if (empty($config->DeviceDetectorCache)) {
-            $config->DeviceDetectorCache = array();
+            $config->DeviceDetectorCache = [];
         }
 
         $cache = $config->DeviceDetectorCache;
@@ -62,8 +55,8 @@ class Configuration
 
     public function uninstall()
     {
-        $config = $this->getConfig();
-        $config->DeviceDetectorCache = array();
+        $config                      = $this->getConfig();
+        $config->DeviceDetectorCache = [];
         $config->forceSave();
     }
 
@@ -88,7 +81,7 @@ class Configuration
      */
     public function getRegexMatchEntry()
     {
-        return (int) $this->getConfigValue(self::KEY_AccessLogRegexMatchEntry, self::DEFAULT_AccessLogRegexMatchEntry);
+        return (int)$this->getConfigValue(self::KEY_AccessLogRegexMatchEntry, self::DEFAULT_AccessLogRegexMatchEntry);
     }
 
     /**
@@ -96,7 +89,7 @@ class Configuration
      */
     public function getNumEntriesToCache()
     {
-        return (int) $this->getConfigValue(self::KEY_NumEntriesToCache, self::DEFAULT_NumEntriesToCache);
+        return (int)$this->getConfigValue(self::KEY_NumEntriesToCache, self::DEFAULT_NumEntriesToCache);
     }
 
     private function getConfig()
@@ -106,7 +99,7 @@ class Configuration
 
     private function getConfigValue($name, $default)
     {
-        $config = $this->getConfig();
+        $config      = $this->getConfig();
         $attribution = $config->DeviceDetectorCache;
         if (isset($attribution[$name])) {
             return $attribution[$name];

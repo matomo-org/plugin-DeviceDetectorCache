@@ -1,4 +1,11 @@
 <?php
+/**
+ * Matomo - free/libre analytics platform
+ *
+ * @link    https://matomo.org
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ */
+
 namespace Piwik\Plugins\DeviceDetectorCache\Commands;
 
 use Piwik\Container\StaticContainer;
@@ -46,13 +53,13 @@ class WarmDeviceDetectorCache extends ConsoleCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $userAgents = array();
+        $userAgents = [];
 
-        $regex = $this->config->getAccessLogRegex();
+        $regex             = $this->config->getAccessLogRegex();
         $numEntriesToCache = $this->config->getNumEntriesToCache();
-        $matchEntry = $this->config->getRegexMatchEntry();
-        $path = $this->config->getAccessLogPath();
-        $path = trim($path);
+        $matchEntry        = $this->config->getRegexMatchEntry();
+        $path              = $this->config->getAccessLogPath();
+        $path              = trim($path);
 
         $this->log('caching up to ' . $numEntriesToCache . ' entries', $output);
         $this->log('reading from file ' . $path, $output);
@@ -66,11 +73,11 @@ class WarmDeviceDetectorCache extends ConsoleCommand
         if (!file_exists($path)) {
             throw new \Exception('Configured access log path does not exist: "' . $path . '"');
         }
-        
+
         $numLinesToProcess = 5000000;
         $numLinesProcessed = 0;
-        $handle = fopen($path, "r");
-        $count = 0;
+        $handle            = fopen($path, "r");
+        $count             = 0;
 
         if ($handle) {
             while (($line = fgets($handle)) !== false) {
@@ -81,14 +88,14 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                 if (empty($line)) {
                     continue;
                 }
-                preg_match($regex ,$line, $matches);
+                preg_match($regex, $line, $matches);
                 if (!empty($matches[$matchEntry])
                     && strlen($matches[$matchEntry]) > 5
-                    && strlen($matches[$matchEntry]) < 700){
+                    && strlen($matches[$matchEntry]) < 700) {
                     $useragent = $matches[$matchEntry];
                     if (!isset($userAgents[$useragent])) {
                         $userAgents[$useragent] = 1;
-                        $count = count($userAgents);
+                        $count                  = count($userAgents);
                         if ($count % 10000 === 0) {
                             $this->printupdate($count, $output);
                         }
@@ -96,8 +103,10 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                         $userAgents[$useragent] = $userAgents[$useragent] + 1;
                     }
                 }
-                $line = null;unset($line);
-                $matches = null;unset($matches);
+                $line = null;
+                unset($line);
+                $matches = null;
+                unset($matches);
                 usleep(30); // slightly slow down disk usage to avoid running eg into some EBS limit
                 if ($numLinesProcessed % 1000 === 0) {
                     usleep(10000); // every 10K lines sleep for a 10ms to not max out CPU as much
@@ -133,7 +142,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                 $this->printupdate('written files so far: ' . $i, $output);
             }
             if ($i <= 10) {
-                $this->log('Found user agent '. $agent . ' count: '. $val, $output);
+                $this->log('Found user agent ' . $agent . ' count: ' . $val, $output);
             }
             CachedEntry::writeToCache($agent);
             usleep(2000);
@@ -141,7 +150,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             // this will make things about 7m slower for 200K entries but at least sudden CPU increase for instance
             // can be prevented when there are only few CPUs available
         }
-        $output->writeln('Written '.$i.' cache entries to file');
+        $output->writeln('Written ' . $i . ' cache entries to file');
     }
 
 }
