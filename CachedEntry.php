@@ -103,7 +103,8 @@ class CachedEntry extends DeviceDetector
             && is_dir($path)
             && strpos($path, PIWIK_DOCUMENT_ROOT) === 0) {
             // fastest way to delete that many files (we'll delete potentially 200K files and more)
-            exec('find ' . escapeshellarg(rtrim(self::getCacheDir(), '/')) . ' -name "*.php" -exec rm {} \;');
+
+            Filesystem::unlinkRecursive(self::getCacheDir(), false);
         }
     }
 }
