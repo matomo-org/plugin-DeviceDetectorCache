@@ -118,21 +118,21 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             throw new \Exception('Error opening file. Maybe no read permission? Path: ' . $path);
         }
 
-        $this->log("parsed file", $output);
+        $this->log("parsed file: " . $numLinesProcessed . " lines", $output);
         $this->printupdate($count, $output);
 
         arsort($userAgents, SORT_NATURAL);
-
-        $this->printupdate($count, $output);
-        $i = 0;
 
         if (empty($userAgents)) {
             $output->writeln('No user agents found');
             return;
         }
 
+        $this->log($count . ' user agents found', $output);
         $this->log("writing files", $output);
         CachedEntry::clearCacheDir();
+        $i = 0;
+
         foreach ($userAgents as $agent => $val) {
             if ($i >= $numEntriesToCache) {
                 break;
