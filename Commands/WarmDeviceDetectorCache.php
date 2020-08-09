@@ -10,6 +10,7 @@ namespace Piwik\Plugins\DeviceDetectorCache\Commands;
 
 use Piwik\Container\StaticContainer;
 use Piwik\Plugin\ConsoleCommand;
+use Piwik\Date;
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
 use Piwik\Plugins\DeviceDetectorCache\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,7 +40,8 @@ class WarmDeviceDetectorCache extends ConsoleCommand
     {
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $mem = round(memory_get_peak_usage() / 1024 / 1024);
-            $output->writeln("Count: " . $count . ' Mem:' . $mem . 'MB');
+            $now = Date::now()->getDatetime();
+            $output->writeln("Count: " . $count . ' Mem:' . $mem . 'MB Date: ' . $now);
         }
     }
 
@@ -47,7 +49,8 @@ class WarmDeviceDetectorCache extends ConsoleCommand
     {
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $mem = round(memory_get_peak_usage() / 1024 / 1024);
-            $output->writeln($message . ' Mem:' . $mem . 'MB');
+            $now = Date::now()->getDatetime();
+            $output->writeln($message . ' Mem:' . $mem . 'MB' . ' Date: ' . $now);
         }
     }
 
