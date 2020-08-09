@@ -110,7 +110,11 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                 unset($line);
                 $matches = null;
                 unset($matches);
-                usleep(30); // slightly slow down disk usage to avoid running eg into some EBS limit
+                
+                if ($numLinesProcessed % 10 === 0) {
+                    usleep(300); // slightly slow down disk usage to avoid running eg into some EBS limit
+                }
+                
                 if ($numLinesProcessed % 1000 === 0) {
                     usleep(10000); // every 10K lines sleep for a 10ms to not max out CPU as much
                 }
