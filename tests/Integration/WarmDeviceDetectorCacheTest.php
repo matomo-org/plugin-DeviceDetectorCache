@@ -22,6 +22,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
     {
         parent::setUp();
         CachedEntry::setCacheDir(PIWIK_DOCUMENT_ROOT. '/tmp/devicecachetests/');
+        CachedEntry::clearCacheDir();
     }
 
     public function tearDown(): void
@@ -80,7 +81,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $this->assertStringContainsString("Configured access log path does not exist", $this->applicationTester->getDisplay());
     }
 
-    public function testDoesClearExistingFilesFromCacheByDefault()
+    public function testDoesNotClearExistingFilesFromCacheByDefault()
     {
         $userAgent     = 'Mozilla/5.0 (Linux; Android 8.0.0; SAMSUNG SM-G930F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/9.4 Chrome/67.0.3396.87 Mobile Safari/537.36';
         $cacheFilePath = CachedEntry::getCachePath($userAgent, true);
@@ -94,7 +95,42 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
             'command' => WarmDeviceDetectorCache::COMMAND_NAME,
         ]);
 
-        $this->assertFileNotExists($cacheFilePath);
+        $this->assertFileExists($cacheFilePath);
+    }
+
+    public function testDoesClearExistingFilesFromCacheByDefaultWhenTooManyEntriesExist()
+    {
+        // was last accessed
+        $userAgentKept     = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
+        $userAgentDeleted  = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36';
+        $cacheFilePathKept = CachedEntry::getCachePath($userAgentKept, true);
+        $cacheFilePathDeleted = CachedEntry::getCachePath($userAgentDeleted, true);
+
+        $this->setCountProcessNumEntries(3);
+
+        $testFile = __DIR__ . '/files/useragents1.csv';
+        $this->setAccessLogFile($testFile);
+
+        //cache 3 entries
+        $this->applicationTester->run([
+            'command' => WarmDeviceDetectorCache::COMMAND_NAME,
+        ]);
+        $this->assertFileExists($cacheFilePathKept);
+        $this->assertFileExists($cacheFilePathDeleted);
+
+        $this->assertEquals(3, CachedEntry::getNumEntriesInCacheDir());
+
+        $this->setCountProcessNumEntries(1);
+
+        // now we run again and it should delete 2 of the entries
+        $this->applicationTester->run([
+            'command' => WarmDeviceDetectorCache::COMMAND_NAME,
+        ]);
+        // should now have deleted 2 files
+        $this->assertEquals(1, CachedEntry::getNumEntriesInCacheDir());
+
+        $this->assertFileExists($cacheFilePathKept);
+        $this->assertFileNotExists($cacheFilePathDeleted);
     }
 
     public function testDoesntProcessAllRowsWhenCounterSet()

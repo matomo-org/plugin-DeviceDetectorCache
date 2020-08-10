@@ -5,13 +5,12 @@
  * @link    https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
-
 namespace Piwik\Plugins\DeviceDetectorCache\Commands;
 
 use Piwik\Container\StaticContainer;
-use Piwik\Plugin\ConsoleCommand;
 use Piwik\Date;
 use Piwik\Piwik;
+use Piwik\Plugin\ConsoleCommand;
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
 use Piwik\Plugins\DeviceDetectorCache\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,19 +50,19 @@ class WarmDeviceDetectorCache extends ConsoleCommand
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $mem = round(memory_get_peak_usage() / 1024 / 1024);
             $now = Date::now()->getDatetime();
-            $output->writeln($message . ' Mem:' . $mem . 'MB' . ' Date: ' . $now);
+            $output->writeln($message . ' Mem:' . $mem . 'MB Date: ' . $now);
         }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $userAgents = [];
+        $userAgents = array();
 
-        $regex             = $this->config->getAccessLogRegex();
+        $regex = $this->config->getAccessLogRegex();
         $numEntriesToCache = $this->config->getNumEntriesToCache();
-        $matchEntry        = $this->config->getRegexMatchEntry();
-        $path              = $this->config->getAccessLogPath();
-        $path              = trim($path);
+        $matchEntry = $this->config->getRegexMatchEntry();
+        $path = $this->config->getAccessLogPath();
+        $path = trim($path);
 
         $this->log('caching up to ' . $numEntriesToCache . ' entries', $output);
         $this->log('reading from file ' . $path, $output);
@@ -78,11 +77,10 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             throw new \Exception('Configured access log path does not exist: "' . $path . '"');
         }
 
-        $numLinesToProcess = 5000000;
+        $count = 0;
+        $numLinesToProcess = StaticContainer::get('DeviceDetectorCacheNumLinesToScan');
         $numLinesProcessed = 0;
-        $handle            = fopen($path, "r");
-        $count             = 0;
-
+        $handle = fopen($path, "r");
         if ($handle) {
             while (($line = fgets($handle)) !== false) {
                 $numLinesProcessed++;
@@ -92,14 +90,14 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                 if (empty($line)) {
                     continue;
                 }
-                preg_match($regex, $line, $matches);
+                preg_match($regex ,$line, $matches);
                 if (!empty($matches[$matchEntry])
                     && strlen($matches[$matchEntry]) > 5
-                    && strlen($matches[$matchEntry]) < 700) {
+                    && strlen($matches[$matchEntry]) < 700){
                     $useragent = $matches[$matchEntry];
                     if (!isset($userAgents[$useragent])) {
                         $userAgents[$useragent] = 1;
-                        $count                  = count($userAgents);
+                        $count = count($userAgents);
                         if ($count % 10000 === 0) {
                             $this->printupdate($count, $output);
                         }
@@ -107,15 +105,12 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                         $userAgents[$useragent] = $userAgents[$useragent] + 1;
                     }
                 }
-                $line = null;
-                unset($line);
-                $matches = null;
-                unset($matches);
-                
+                $line = null;unset($line);
+                $matches = null;unset($matches);
                 if ($numLinesProcessed % 10 === 0) {
                     usleep(300); // slightly slow down disk usage to avoid running eg into some EBS limit
                 }
-                
+
                 if ($numLinesProcessed % 1000 === 0) {
                     usleep(10000); // every 10K lines sleep for a 10ms to not max out CPU as much
                 }
@@ -138,36 +133,49 @@ class WarmDeviceDetectorCache extends ConsoleCommand
 
         $this->log($count . ' user agents found', $output);
         $this->log("writing files", $output);
-        CachedEntry::clearCacheDir();
+
         $i = 0;
         $numRequestsDetected = 0;
+        $ignoreUserAgentsWithLessRequestsThan = StaticContainer::get('DeviceDetectorCacheIgnoreUserAgentsWithLessThanXRequests');
 
         foreach ($userAgents as $agent => $val) {
             if ($i >= $numEntriesToCache) {
                 $output->writeln('stopping because number of configured entries were cached');
                 break;
             }
-            if ($val < 9) {
+            if ($val < $ignoreUserAgentsWithLessRequestsThan) {
                 $output->writeln('stopping because remaining user agents have only few requests');
                 // we don't cache user agents that happened less than 9 times or less as it's so rare it's not really worth caching it and we rather do it on demand
                 break;
             }
             $i++;
-            $numRequestsDetected += $val; // useful to detect hit ratio 
+            $numRequestsDetected += $val; // useful to detect hit ratio
+
             if ($i % 5000 === 0) {
                 $this->printupdate('written files so far: ' . $i . ' detecting that many requests: ' . $numRequestsDetected, $output);
             }
             if ($i <= 10) {
-                $this->log('Found user agent ' . $agent . ' count: ' . $val, $output);
+                $this->log('Found user agent '. $agent . ' count: '. $val, $output);
             }
             CachedEntry::writeToCache($agent);
-            usleep(2000);
             // sleep 2ms to let CPU do something else
-            // this will make things about 7m slower for 200K entries but at least sudden CPU increase for instance
+            // this will make things about 10m slower for 200K entries but at least sudden CPU increase for instance
             // can be prevented when there are only few CPUs available
+            // note: roughly per minute we write around 5K entries
+            usleep(2000);
         }
-        $output->writeln('Written ' . $i . ' cache entries to file');
+        $output->writeln('Written '.$i.' cache entries to file.');
         $output->writeln('The hit ratio will be roughly ' . Piwik::getPercentageSafe($numRequestsDetected, $numLinesToProcess) . '%');
+
+        $numCacheFilesExist = CachedEntry::getNumEntriesInCacheDir();
+        $output->writeln($numCacheFilesExist . ' cached files exist');
+
+        if ($numCacheFilesExist > $numEntriesToCache) {
+            $numEntriesToDelete = $numCacheFilesExist - $numEntriesToCache;
+            $output->writeln('Need to delete ' . $numEntriesToDelete . ' files');
+            CachedEntry::deleteLeastAccessedFiles($numEntriesToDelete);
+            $output->writeln('done deleting files');
+        }
     }
 
 }
