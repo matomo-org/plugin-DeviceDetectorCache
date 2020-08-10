@@ -144,9 +144,11 @@ class WarmDeviceDetectorCache extends ConsoleCommand
 
         foreach ($userAgents as $agent => $val) {
             if ($i >= $numEntriesToCache) {
+                $output->writeln('stopping because number of configured entries were cached');
                 break;
             }
             if ($val < 9) {
+                $output->writeln('stopping because remaining user agents have only few requests');
                 // we don't cache user agents that happened less than 9 times or less as it's so rare it's not really worth caching it and we rather do it on demand
                 break;
             }
