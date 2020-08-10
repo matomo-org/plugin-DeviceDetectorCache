@@ -11,6 +11,7 @@ namespace Piwik\Plugins\DeviceDetectorCache\Commands;
 use Piwik\Container\StaticContainer;
 use Piwik\Plugin\ConsoleCommand;
 use Piwik\Date;
+use Piwik\Piwik;
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
 use Piwik\Plugins\DeviceDetectorCache\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
@@ -139,14 +140,20 @@ class WarmDeviceDetectorCache extends ConsoleCommand
         $this->log("writing files", $output);
         CachedEntry::clearCacheDir();
         $i = 0;
+        $numRequestsDetected = 0;
 
         foreach ($userAgents as $agent => $val) {
             if ($i >= $numEntriesToCache) {
                 break;
             }
+            if ($val < 9) {
+                // we don't cache user agents that happened less than 9 times or less as it's so rare it's not really worth caching it and we rather do it on demand
+                break;
+            }
             $i++;
+            $numRequestsDetected += $val; // useful to detect hit ratio 
             if ($i % 5000 === 0) {
-                $this->printupdate('written files so far: ' . $i, $output);
+                $this->printupdate('written files so far: ' . $i . ' detecting that many requests: ' . $numRequestsDetected, $output);
             }
             if ($i <= 10) {
                 $this->log('Found user agent ' . $agent . ' count: ' . $val, $output);
@@ -158,6 +165,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             // can be prevented when there are only few CPUs available
         }
         $output->writeln('Written ' . $i . ' cache entries to file');
+        $output->writeln('The hit ratio will be roughly ' . Piwik::getPercentageSafe($numRequestsDetected, $numLinesToProcess) . '%');
     }
 
 }
