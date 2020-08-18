@@ -138,7 +138,9 @@ class CachedEntry extends DeviceDetector
     private static function getCacheFilesInCacheDir()
     {
         $path = rtrim(self::getCacheDir(), '/');
-        return Filesystem::globr($path, '*.php');
+        return array_filter(Filesystem::globr($path, '*.php'), function($file) {
+            return strpos($file, 'index.php') === false;
+        });
     }
 
     public static function deleteLeastAccessedFiles($numFilesToDelete)
