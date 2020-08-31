@@ -1,5 +1,8 @@
 ## Changelog
 
+4.2.0
+- Performance improvements
+
 4.1.0
 - Changed how this command works. It now requires a configuration.
 
