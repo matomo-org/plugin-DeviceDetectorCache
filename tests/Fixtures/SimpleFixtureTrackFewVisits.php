@@ -28,6 +28,7 @@ class SimpleFixtureTrackFewVisits extends Fixture
     private $userAgent1 = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
     private $userAgent2 = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36';
 
+
     public function setUp(): void
     {
         $this->setupCache();
