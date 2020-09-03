@@ -1,5 +1,8 @@
 ## Changelog
 
+4.2.1
+- Compatibility with PHP DI 6
+
 4.2.0
 - Performance improvements
 
