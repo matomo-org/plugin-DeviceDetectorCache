@@ -23,7 +23,7 @@ Configure these values in your `config/config.ini.php`
 ```
 [DeviceDetectorCache]
 access_log_path = "/var/log/httpd/access_log" # The path to your access log file. This command needs to have read permission for this file
-access_log_regex = "/^(\S+) (\S+) (\S+) \[([^:]+):(\d+:\d+:\d+) ([^\]]+)\] \"(\S+) (.*?) (\S+)\" (\S+) (\S+) "([^"]*)" "([^"]*)"$/" # the regex used to extract the user agent
+access_log_regex = "/^(\S+) (\S+) (\S+) \[([^:]+):(\d+:\d+:\d+) ([^\]]+)\] \"(\S+) (.*?) (\S+)\" (\S+) (\S+) \"([^\"]*)\" \"([^\"]*)\"$/" # the regex used to extract the user agent
 regex_match_entry = 14 # defines which subpattern of the abovce regex matches the user agent
 num_cache_entries = 200000 # how many user agents should be cached. This value basically depends on your memory and disk space. Likely there is no need to change this
 ```
