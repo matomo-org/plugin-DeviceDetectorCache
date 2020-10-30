@@ -46,7 +46,7 @@ class SimpleFixtureTrackFewVisits extends Fixture
     {
         $expected = [
             'bot'    => null,
-            'brand'  => 'FL',
+            'brand'  => 'Fly',
             'client' => [
                 'type'           => 'browser',
                 'name'           => 'Microsoft Edge',
