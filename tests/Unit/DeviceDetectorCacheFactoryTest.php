@@ -51,7 +51,7 @@ class DeviceDetectorCacheFactoryTest extends TestCase
         $deviceDetection = $factory->makeInstance($userAgent);
         $this->assertInstanceOf(CachedEntry::class, $deviceDetection);
         $this->assertEquals(null, $deviceDetection->getBot());
-        $this->assertEquals('Cooper', $deviceDetection->getBrand());
+        $this->assertEquals('Cooper', $deviceDetection->getBrandName());
         $this->assertEquals($expected['client'], $deviceDetection->getClient());
         $this->assertEquals(1, $deviceDetection->getDevice());
         $this->assertEquals('iPhone', $deviceDetection->getModel());
@@ -68,7 +68,7 @@ class DeviceDetectorCacheFactoryTest extends TestCase
                 'short_name'     => 'FF',
                 'version'        => '33.0',
                 'engine'         => 'Gecko',
-                'engine_version' => '',
+                'engine_version' => '33.0',
             ],
             'os'     => [
                 'name'       => 'Mac',

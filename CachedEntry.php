@@ -66,7 +66,7 @@ class CachedEntry extends DeviceDetector
 
         $outputArray = array(
             'bot' => $deviceDetector->getBot(),
-            'brand' => $deviceDetector->getBrand(),
+            'brand' => $deviceDetector->getBrandName(),
             'client' => $deviceDetector->getClient(),
             'device' => $deviceDetector->getDevice(),
             'model' => $deviceDetector->getModel(),
