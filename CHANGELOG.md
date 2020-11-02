@@ -1,5 +1,8 @@
 ## Changelog
 
+4.2.2
+- Compatibility with Matomo 4
+
 4.2.1
 - Compatibility with PHP DI 6
 
