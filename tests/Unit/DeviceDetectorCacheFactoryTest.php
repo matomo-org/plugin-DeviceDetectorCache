@@ -83,10 +83,14 @@ class DeviceDetectorCacheFactoryTest extends TestCase
         $this->assertInstanceOf("\DeviceDetector\DeviceDetector", $deviceDetection);
         $this->assertEquals(null, $deviceDetection->getBot());
         $this->assertEquals('AP', $deviceDetection->getBrand());
-        $this->assertEquals($expected['client'], $deviceDetection->getClient());
+        $client = $deviceDetection->getClient();
+        unset($client['family']); // newer version of DD might return the family. We ignore it here, to allow tests with older Matomo versions
+        $this->assertEquals($expected['client'], $client);
         $this->assertEquals(0, $deviceDetection->getDevice());
         $this->assertEquals('', $deviceDetection->getModel());
-        $this->assertEquals($expected['os'], $deviceDetection->getOs());
+        $os = $deviceDetection->getOs();
+        unset($os['family']); // newer version of DD might return the family. We ignore it here, to allow tests with older Matomo versions
+        $this->assertEquals($expected['os'], $os);
     }
 
     public static function writeFakeFile($expected, $userAgent)
