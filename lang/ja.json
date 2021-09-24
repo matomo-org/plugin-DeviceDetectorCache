@@ -1,1 +1,5 @@
-{}
+{
+    "DeviceDetectorCache": {
+        "PluginDescription": "多くのデバイス、OS、ボット、ブラウザをキャッシュから検出することで、トラッキングを高速化します。"
+    }
+}
