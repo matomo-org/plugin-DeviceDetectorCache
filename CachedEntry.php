@@ -21,7 +21,7 @@ class CachedEntry extends DeviceDetector
 
     public function __construct($userAgent, $values)
     {
-        parent::setUserAgent($userAgent);
+        parent::__construct($userAgent);
         $this->bot = $values['bot'];
         $this->brand = $values['brand'];
         $this->client = $values['client'];
