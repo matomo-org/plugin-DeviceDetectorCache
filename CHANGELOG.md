@@ -1,5 +1,8 @@
 ## Changelog
 
+4.2.3
+- Fixed parsers not being set when cache is present
+
 4.2.2
 - Compatibility with Matomo 4
 
