@@ -45,6 +45,8 @@ class DeviceDetectorCacheTest extends SystemTestCase
                 'date'       => self::$fixture->dateTime,
                 'periods'    => ['day'],
                 'testSuffix' => '',
+                // values have changes in Matomo 4.6, so ignore them as they are not relevant for this plugin anyways
+                'xmlFieldsToRemove' => array('timeSpent', 'timeSpentPretty')
             ],
         ];
 
