@@ -8,12 +8,8 @@
 
 namespace Piwik\Plugins\DeviceDetectorCache\tests\Integration;
 
-use Piwik\DeviceDetector\DeviceDetectorFactory;
 use Piwik\Filesystem;
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
-use Piwik\Plugins\DeviceDetectorCache\Commands\WarmDeviceDetectorCache;
-use Piwik\Plugins\DeviceDetectorCache\Configuration;
-use Piwik\Plugins\DeviceDetectorCache\Factory;
 use Piwik\Tests\Framework\TestCase\ConsoleCommandTestCase;
 
 class CachedEntryTest extends ConsoleCommandTestCase
