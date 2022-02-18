@@ -1,1 +1,5 @@
-{}
+{
+    "DeviceDetectorCache": {
+        "PluginDescription": "Fa que el seguiment sigui més ràpid detectant molts dispositius, sistemes operatius, robots i navegadors des d'una memòria cau."
+    }
+}
