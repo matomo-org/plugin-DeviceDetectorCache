@@ -1,1 +1,5 @@
-{}
+{
+    "DeviceDetectorCache": {
+        "PluginDescription": "Membuat pelacakan menjadi lebih cepat dengan mendeteksi banyak perangkat, sistem operasi, bot, dan peramban dari cache."
+    }
+}
