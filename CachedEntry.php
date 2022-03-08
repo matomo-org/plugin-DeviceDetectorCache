@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -9,28 +10,45 @@
 
 namespace Piwik\Plugins\DeviceDetectorCache;
 
+use DeviceDetector\ClientHints;
 use DeviceDetector\DeviceDetector;
 use Piwik\Container\StaticContainer;
 use Piwik\DeviceDetector\DeviceDetectorFactory;
 use Piwik\Filesystem;
+use Piwik\Plugins\DeviceDetectorCache\DeviceDetector\CachedBrowserParser;
+use Piwik\Plugins\DeviceDetectorCache\DeviceDetector\CachedOperatingSystemParser;
 
 class CachedEntry extends DeviceDetector
 {
     private static $CACHE_DIR = '';
     private static $customCache = null;
 
-    public function __construct($userAgent, $values)
+    public function __construct(string $userAgent, $clientHints, array $values)
     {
-        parent::__construct($userAgent);
+        $clientHints = $clientHints ? ClientHints::factory($clientHints) : null;
+        parent::__construct($userAgent, $clientHints);
+
         $this->bot = $values['bot'];
         $this->brand = $values['brand'];
         $this->client = $values['client'];
         $this->device = $values['device'];
         $this->model = $values['model'];
         $this->os = $values['os'];
+
+        // Or cached entries only use the useragents, so if we have some client hints provided,
+        // We use some special parsers, which use the cached user agent result and parses it again using client hints
+        if (!empty($clientHints) && $values['client']['type'] === 'browser') {
+            $browserParser = new CachedBrowserParser($userAgent, $clientHints);
+            $this->client = $browserParser->parse();
+        }
+
+        if (!empty($clientHints)) {
+            $osParser = new CachedOperatingSystemParser($userAgent, $clientHints);
+            $this->os = $osParser->parse();
+        }
     }
 
-    public static function getCached($userAgent)
+    public static function getCached(string $userAgent): ?array
     {
         // we check if file exists and include the file here directly as it needs to be kind of atomic...
         // if we only checked if file exists, and then choose to use cached entry which would then include the file,
@@ -43,15 +61,15 @@ class CachedEntry extends DeviceDetector
                 return $values;
             }
         }
+
+        return null;
     }
 
-    public static function writeToCache($userAgent)
+    public static function writeToCache(string $userAgent): ?string
     {
         if (self::getCached($userAgent)) {
-            return; // already cached
+            return null; // already cached
         }
-
-        $userAgent = DeviceDetectorFactory::getNormalizedUserAgent($userAgent);
 
         if (empty(self::$customCache)) {
             self::$customCache = StaticContainer::get('DeviceDetector\Cache\Cache');
@@ -64,14 +82,14 @@ class CachedEntry extends DeviceDetector
         $deviceDetector->setCache(self::$customCache);
         $deviceDetector->parse();
 
-        $outputArray = array(
+        $outputArray = [
             'bot' => $deviceDetector->getBot(),
             'brand' => $deviceDetector->getBrandName(),
             'client' => $deviceDetector->getClient(),
             'device' => $deviceDetector->getDevice(),
             'model' => $deviceDetector->getModel(),
             'os' => $deviceDetector->getOs()
-        );
+        ];
         $outputPath = self::getCachePath($userAgent, true);
         $content = "<?php return " . var_export($outputArray, true) . ";";
         file_put_contents($outputPath, $content, LOCK_EX);
@@ -79,7 +97,7 @@ class CachedEntry extends DeviceDetector
         return $outputPath;
     }
 
-    public static function getCachePath($userAgent, $createDirs = false)
+    public static function getCachePath(string $userAgent, bool $createDirs = false): string
     {
         $userAgent = DeviceDetectorFactory::getNormalizedUserAgent($userAgent);
         $hashedUserAgent = md5($userAgent);
@@ -100,12 +118,12 @@ class CachedEntry extends DeviceDetector
         return $hashDir . '/' . $hashedUserAgent . '.php';
     }
 
-    public static function setCacheDir($cacheDir)
+    public static function setCacheDir(string $cacheDir): void
     {
         self::$CACHE_DIR = $cacheDir;
     }
 
-    public static function getCacheDir()
+    public static function getCacheDir(): string
     {
         if (empty(self::$CACHE_DIR)) {
             self::$CACHE_DIR = rtrim(PIWIK_DOCUMENT_ROOT, '/') . '/tmp/devicecache/';
@@ -117,39 +135,41 @@ class CachedEntry extends DeviceDetector
      * @internal
      * tests only
      */
-    public static function clearCacheDir()
+    public static function clearCacheDir(): void
     {
         $path = self::getCacheDir();
-        if (!empty($path)
+        if (
+            !empty($path)
             && is_dir($path)
-            && strpos($path, PIWIK_DOCUMENT_ROOT) === 0) {
+            && strpos($path, PIWIK_DOCUMENT_ROOT) === 0
+        ) {
             // fastest way to delete that many files (we'll delete potentially 200K files and more)
 
             Filesystem::unlinkRecursive(self::getCacheDir(), false);
         }
     }
 
-    public static function getNumEntriesInCacheDir()
+    public static function getNumEntriesInCacheDir(): int
     {
         $files = self::getCacheFilesInCacheDir();
         return count($files);
     }
 
-    private static function getCacheFilesInCacheDir()
+    private static function getCacheFilesInCacheDir(): array
     {
         $path = rtrim(self::getCacheDir(), '/');
-        return array_filter(Filesystem::globr($path, '*.php'), function($file) {
+        return array_filter(Filesystem::globr($path, '*.php'), function ($file) {
             return strpos($file, 'index.php') === false;
         });
     }
 
-    public static function deleteLeastAccessedFiles($numFilesToDelete)
+    public static function deleteLeastAccessedFiles(int $numFilesToDelete): void
     {
         if ($numFilesToDelete < 1) {
             return; // nothing to delete
         }
         $files = self::getCacheFilesInCacheDir();
-        $accessed = array();
+        $accessed = [];
         foreach ($files as $file) {
             $accessed[$file] = fileatime($file);
         }
@@ -166,6 +186,5 @@ class CachedEntry extends DeviceDetector
                 $numFilesDeleted++;
             }
         }
-
     }
 }

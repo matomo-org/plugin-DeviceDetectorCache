@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -17,7 +18,7 @@ class CachedEntryTest extends ConsoleCommandTestCase
     public function setUp(): void
     {
         parent::setUp();
-        CachedEntry::setCacheDir(PIWIK_DOCUMENT_ROOT. '/tmp/devicecachetests/');
+        CachedEntry::setCacheDir(PIWIK_DOCUMENT_ROOT . '/tmp/devicecachetests/');
         CachedEntry::clearCacheDir();
     }
 
@@ -35,27 +36,29 @@ class CachedEntryTest extends ConsoleCommandTestCase
 
     public function testGetNumCacheFiles()
     {
-        CachedEntry::writeToCache('foo');
+        CachedEntry::writeToCache('foo', []);
         $this->assertEquals(1, CachedEntry::getNumEntriesInCacheDir());
-        CachedEntry::writeToCache('bar');
+        CachedEntry::writeToCache('bar', []);
         $this->assertEquals(2, CachedEntry::getNumEntriesInCacheDir());
-        CachedEntry::writeToCache('baz');
+        CachedEntry::writeToCache('baz', []);
         $this->assertEquals(3, CachedEntry::getNumEntriesInCacheDir());
     }
 
     public function testGetCached_noEntry()
     {
-        $this->assertNull(CachedEntry::getCached('foo'));
+        $this->assertNull(CachedEntry::getCached('foo', []));
     }
 
     public function test_writeToCache_GetCached()
     {
-        CachedEntry::writeToCache('foo');
-        $cacheEntry = CachedEntry::getCached('foo');
-        $this->assertEquals(array(
+        CachedEntry::writeToCache('foo', []);
+        $cacheEntry = CachedEntry::getCached('foo', []);
+        $this->assertEquals(
+            [
             'bot', 'brand', 'client', 'device', 'model', 'os'
-        )
-        , array_keys($cacheEntry));
+            ],
+            array_keys($cacheEntry)
+        );
     }
 
     public function test_getCachePath()
@@ -80,7 +83,7 @@ class CachedEntryTest extends ConsoleCommandTestCase
 
     public function test_deleteLeastAccessedFiles_nothingToDelete()
     {
-        $filePath = CachedEntry::writeToCache('file');
+        $filePath = CachedEntry::writeToCache('file', []);
         $this->assertFileExists($filePath);
 
         CachedEntry::deleteLeastAccessedFiles(-1);
@@ -91,13 +94,13 @@ class CachedEntryTest extends ConsoleCommandTestCase
 
     public function test_deleteLeastAccessedFiles_deletesOnlyOldest()
     {
-        $filePath1 = CachedEntry::writeToCache('file');
+        $filePath1 = CachedEntry::writeToCache('file', []);
         sleep(1); // otherwise without sleep the sorting won't work properly
-        $filePath2 = CachedEntry::writeToCache('bar');
+        $filePath2 = CachedEntry::writeToCache('bar', []);
         sleep(1);
-        $filePath3 = CachedEntry::writeToCache('baz');
+        $filePath3 = CachedEntry::writeToCache('baz', []);
         sleep(1);
-        $filePath4 = CachedEntry::writeToCache('foo');
+        $filePath4 = CachedEntry::writeToCache('foo', []);
         sleep(1);
 
         CachedEntry::deleteLeastAccessedFiles(2);
@@ -110,13 +113,13 @@ class CachedEntryTest extends ConsoleCommandTestCase
 
     public function test_deleteLeastAccessedFiles_deletesOnlyOldest2()
     {
-        $filePath1 = CachedEntry::writeToCache('file');
+        $filePath1 = CachedEntry::writeToCache('file', []);
         sleep(1);
-        $filePath2 = CachedEntry::writeToCache('bar');
+        $filePath2 = CachedEntry::writeToCache('bar', []);
         sleep(1);
-        $filePath3 = CachedEntry::writeToCache('baz');
+        $filePath3 = CachedEntry::writeToCache('baz', []);
         sleep(1);
-        $filePath4 = CachedEntry::writeToCache('foo');
+        $filePath4 = CachedEntry::writeToCache('foo', []);
         sleep(1);
 
         touch($filePath1);
@@ -130,5 +133,4 @@ class CachedEntryTest extends ConsoleCommandTestCase
         $this->assertFileExists($filePath1);
         $this->assertFileExists($filePath3);
     }
-
 }

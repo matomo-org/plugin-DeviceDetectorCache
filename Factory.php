@@ -12,13 +12,13 @@ use Piwik\DeviceDetector\DeviceDetectorFactory;
 
 class Factory extends DeviceDetectorFactory
 {
-    protected function getDeviceDetectionInfo($userAgent)
+    protected function getDeviceDetectionInfo($userAgent, $clientHints = [])
     {
         $cache = CachedEntry::getCached($userAgent);
         if (!empty($cache)) {
-            return new CachedEntry($userAgent, $cache);
+            return new CachedEntry($userAgent, $clientHints, $cache);
         }
 
-        return parent::getDeviceDetectionInfo($userAgent);
+        return parent::getDeviceDetectionInfo($userAgent, $clientHints);
     }
 }

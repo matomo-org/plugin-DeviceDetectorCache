@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -10,7 +11,6 @@ namespace Piwik\Plugins\DeviceDetectorCache;
 
 class DeviceDetectorCache extends \Piwik\Plugin
 {
-
     public function isTrackerPlugin()
     {
         return true;
@@ -21,5 +21,4 @@ class DeviceDetectorCache extends \Piwik\Plugin
         $config = new Configuration();
         $config->install();
     }
-
 }
