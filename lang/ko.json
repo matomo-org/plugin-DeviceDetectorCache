@@ -1,1 +1,5 @@
-{}
+{
+    "DeviceDetectorCache": {
+        "PluginDescription": "캐시에서 많은 장치, 운영 체제, 봇 및 브라우저를 감지하여 더 빠르게 추적합니다."
+    }
+}
