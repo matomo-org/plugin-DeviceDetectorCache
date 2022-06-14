@@ -15,6 +15,11 @@ use Piwik\Filesystem;
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
 use Piwik\Plugins\DeviceDetectorCache\Factory;
 
+/**
+ * @group DeviceDetectorCache
+ * @group DeviceDetectorCacheFactoryTest
+ * @group Plugins
+ */
 class DeviceDetectorCacheFactoryTest extends TestCase
 {
     public function setUp(): void
@@ -90,7 +95,7 @@ class DeviceDetectorCacheFactoryTest extends TestCase
 
         self::writeFakeFile($expected, $userAgent);
 
-        $factory         = new Factory();
+        $factory = new Factory();
 
         // not using client hints will return the cached entry
         $deviceDetection = $factory->makeInstance($userAgent, []);

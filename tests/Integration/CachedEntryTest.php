@@ -13,6 +13,11 @@ use Piwik\Filesystem;
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
 use Piwik\Tests\Framework\TestCase\ConsoleCommandTestCase;
 
+/**
+ * @group DeviceDetectorCache
+ * @group CachedEntryTest
+ * @group Plugins
+ */
 class CachedEntryTest extends ConsoleCommandTestCase
 {
     public function setUp(): void
