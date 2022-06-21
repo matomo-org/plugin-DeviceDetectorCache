@@ -12,7 +12,7 @@ use Piwik\DeviceDetector\DeviceDetectorFactory;
 
 class Factory extends DeviceDetectorFactory
 {
-    protected function getDeviceDetectionInfo($userAgent, $clientHints = [])
+    protected function getDeviceDetectionInfo($userAgent, array $clientHints = [])
     {
         $cache = CachedEntry::getCached($userAgent);
         if (!empty($cache)) {
