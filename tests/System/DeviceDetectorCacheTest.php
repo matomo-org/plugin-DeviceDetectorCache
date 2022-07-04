@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -46,7 +47,7 @@ class DeviceDetectorCacheTest extends SystemTestCase
                 'periods'    => ['day'],
                 'testSuffix' => '',
                 // values have changes in Matomo 4.6, so ignore them as they are not relevant for this plugin anyways
-                'xmlFieldsToRemove' => array('timeSpent', 'timeSpentPretty')
+                'xmlFieldsToRemove' => ['timeSpent', 'timeSpentPretty']
             ],
         ];
 
@@ -62,7 +63,6 @@ class DeviceDetectorCacheTest extends SystemTestCase
     {
         return dirname(__FILE__);
     }
-
 }
 
 DeviceDetectorCacheTest::$fixture = new SimpleFixtureTrackFewVisits();

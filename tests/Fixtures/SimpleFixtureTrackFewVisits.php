@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -65,7 +66,7 @@ class SimpleFixtureTrackFewVisits extends Fixture
             ],
         ];
         //user agent 2 should detect an iphone even though it is not as it's read from cache
-        CachedEntry::setCacheDir(PIWIK_DOCUMENT_ROOT. '/tmp/devicecachetests/');
+        CachedEntry::setCacheDir(PIWIK_DOCUMENT_ROOT . '/tmp/devicecachetests/');
         DeviceDetectorCacheFactoryTest::writeFakeFile($expected, $this->userAgent2);
     }
 

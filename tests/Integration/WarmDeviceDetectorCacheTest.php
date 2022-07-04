@@ -16,6 +16,11 @@ use Piwik\Plugins\DeviceDetectorCache\Configuration;
 use Piwik\Plugins\DeviceDetectorCache\Factory;
 use Piwik\Tests\Framework\TestCase\ConsoleCommandTestCase;
 
+/**
+ * @group DeviceDetectorCache
+ * @group WarmDeviceDetectorCacheTest
+ * @group Plugins
+ */
 class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
 {
     public function setUp(): void

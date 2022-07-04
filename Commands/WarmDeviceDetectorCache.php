@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link    https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\DeviceDetectorCache\Commands;
 
 use Piwik\Container\StaticContainer;
@@ -56,7 +58,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $userAgents = array();
+        $userAgents = [];
 
         $regex = $this->config->getAccessLogRegex();
         $numEntriesToCache = $this->config->getNumEntriesToCache();
@@ -90,10 +92,12 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                 if (empty($line)) {
                     continue;
                 }
-                preg_match($regex ,$line, $matches);
-                if (!empty($matches[$matchEntry])
+                preg_match($regex, $line, $matches);
+                if (
+                    !empty($matches[$matchEntry])
                     && strlen($matches[$matchEntry]) > 5
-                    && strlen($matches[$matchEntry]) < 700){
+                    && strlen($matches[$matchEntry]) < 700
+                ) {
                     $useragent = $matches[$matchEntry];
                     if (!isset($userAgents[$useragent])) {
                         $userAgents[$useragent] = 1;
@@ -105,8 +109,10 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                         $userAgents[$useragent] = $userAgents[$useragent] + 1;
                     }
                 }
-                $line = null;unset($line);
-                $matches = null;unset($matches);
+                $line = null;
+                unset($line);
+                $matches = null;
+                unset($matches);
                 if ($numLinesProcessed % 10 === 0) {
                     usleep(300); // slightly slow down disk usage to avoid running eg into some EBS limit
                 }
@@ -155,16 +161,16 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                 $this->printupdate('written files so far: ' . $i . ' detecting that many requests: ' . $numRequestsDetected, $output);
             }
             if ($i <= 10) {
-                $this->log('Found user agent '. $agent . ' count: '. $val, $output);
+                $this->log('Found user agent ' . $agent . ' count: ' . $val, $output);
             }
-            CachedEntry::writeToCache($agent);
+            CachedEntry::writeToCache($agent, []);
             // sleep 2ms to let CPU do something else
             // this will make things about 10m slower for 200K entries but at least sudden CPU increase for instance
             // can be prevented when there are only few CPUs available
             // note: roughly per minute we write around 5K entries
             usleep(2000);
         }
-        $output->writeln('Written '.$i.' cache entries to file.');
+        $output->writeln('Written ' . $i . ' cache entries to file.');
         $output->writeln('The hit ratio will be roughly ' . Piwik::getPercentageSafe($numRequestsDetected, $numLinesToProcess) . '%');
 
         $numCacheFilesExist = CachedEntry::getNumEntriesInCacheDir();
@@ -179,5 +185,4 @@ class WarmDeviceDetectorCache extends ConsoleCommand
 
         return 0;
     }
-
 }
