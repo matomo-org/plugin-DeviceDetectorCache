@@ -14,6 +14,7 @@ use Piwik\DeviceDetector\DeviceDetectorFactory;
 use Piwik\Filesystem;
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
 use Piwik\Plugins\DeviceDetectorCache\Factory;
+use Piwik\Version;
 
 /**
  * @group DeviceDetectorCache
@@ -125,6 +126,20 @@ class DeviceDetectorCacheFactoryTest extends TestCase
             'engine_version' => '97.0.4692.71',
             'family' => 'Internet Explorer',
         ];
+
+        if (version_compare('4.11.0', Version::VERSION, '>=')) {
+            // On older versions client hints were not supported and thus the result differed.
+            $expected['os'] = [
+                'name' => 'Windows',
+                'version' => '10',
+            ];
+            $expected['client'] = [
+                'type' => 'browser',
+                'name' => 'Microsoft Edge',
+                'version' => '97.0.1072.66'
+            ];
+        }
+
         $this->assertInstanceOf(CachedEntry::class, $deviceDetection);
         $this->assertEquals(null, $deviceDetection->getBot());
         $this->assertEquals($expected['brand'], $deviceDetection->getBrandName());
