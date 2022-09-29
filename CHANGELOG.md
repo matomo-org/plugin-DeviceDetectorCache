@@ -3,7 +3,6 @@
 4.3.0
 - Compatibility with Matomo 4.12, and Adjustments for client hints support
 
-
 4.2.3
 - Fixed parsers not being set when cache is present
 
