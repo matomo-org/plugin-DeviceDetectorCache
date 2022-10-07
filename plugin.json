@@ -1,7 +1,7 @@
 {
   "name": "DeviceDetectorCache",
   "description": "Makes tracking faster by detecting many devices, operating systems, bots, and browsers from a cache.",
-  "version": "4.3.0",
+  "version": "4.3.1",
   "theme": false,
   "require": {
     "matomo": ">=4.12.0-b3,<5.0.0-b1"
