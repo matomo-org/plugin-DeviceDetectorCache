@@ -1,5 +1,8 @@
 ## Changelog
 
+5.0.0
+- Compatibility with Matomo 5.X
+
 4.3.0
 - Compatibility with Matomo 4.12, and Adjustments for client hints support
 
