@@ -1,5 +1,7 @@
 <?php
 
+use Matomo\Dependencies\DI;
+
 return [
     'DeviceDetectorCacheIgnoreUserAgentsWithLessThanXRequests' => 9,
     'DeviceDetectorCacheNumLinesToScan' => 5000000,

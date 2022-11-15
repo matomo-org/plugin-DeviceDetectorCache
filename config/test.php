@@ -1,6 +1,7 @@
 <?php
 
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
+use Matomo\Dependencies\DI;
 
 return [
     'DeviceDetectorCacheIgnoreUserAgentsWithLessThanXRequests' => 0,
