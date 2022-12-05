@@ -1,1 +1,5 @@
-{}
+{
+    "DeviceDetectorCache": {
+        "PluginDescription": "Fai o seguimento máis rápido detectando moitos dispositivos, sistemas operativos, bots e navegadores desde unha caché."
+    }
+}
