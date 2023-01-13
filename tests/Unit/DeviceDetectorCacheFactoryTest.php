@@ -122,8 +122,9 @@ class DeviceDetectorCacheFactoryTest extends TestCase
             'name' => 'Microsoft Edge',
             'version' => '98.0',
             'short_name' => 'PS',
-            'engine' => 'Blink',
-            'engine_version' => '97.0.4692.71',
+            // empty because cached result doesn't contain it and engine won't be detected through client hints only
+            'engine' => '',
+            'engine_version' => '',
             'family' => 'Internet Explorer',
         ];
 

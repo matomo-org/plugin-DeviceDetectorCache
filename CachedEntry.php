@@ -39,11 +39,13 @@ class CachedEntry extends DeviceDetector
         // We use some special parsers, which use the cached user agent result and parses it again using client hints
         if (!empty($clientHints) && $values['client']['type'] === 'browser') {
             $browserParser = new CachedBrowserParser($userAgent, $clientHints);
+            $browserParser->setCachedResult($this->client);
             $this->client = $browserParser->parse();
         }
 
         if (!empty($clientHints)) {
             $osParser = new CachedOperatingSystemParser($userAgent, $clientHints);
+            $osParser->setCachedResult($this->os);
             $this->os = $osParser->parse();
         }
     }
