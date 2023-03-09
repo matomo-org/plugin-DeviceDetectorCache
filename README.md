@@ -1,6 +1,6 @@
 # Matomo DeviceDetectorCache Plugin
 
-[![Build Status](https://travis-ci.com/matomo-org/plugin-DeviceDetectorCache.svg?branch=master)](https://travis-ci.com/matomo-org/plugin-DeviceDetectorCache)
+[![Build Status](https://github.com/matomo-org/plugin-DeviceDetectorCache/actions/workflows/matomo-tests.yml/badge.svg?branch=4.x-dev)](https://github.com/matomo-org/plugin-DeviceDetectorCache/actions/workflows/matomo-tests.yml)
 
 ## Description
 
