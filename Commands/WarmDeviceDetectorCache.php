@@ -72,7 +72,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
 
         if (empty($numEntriesToCache)) {
             $output->writeln('No entries are supposed to be cached. Stopping command');
-            return 0;
+            return self::SUCCESS;
         }
 
         if (!file_exists($path)) {
@@ -134,7 +134,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
 
         if (empty($userAgents)) {
             $output->writeln('No user agents found');
-            return 0;
+            return self::SUCCESS;
         }
 
         $this->log($count . ' user agents found', $output);
@@ -183,6 +183,6 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             $output->writeln('done deleting files');
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 }
