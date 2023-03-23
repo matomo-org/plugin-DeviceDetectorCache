@@ -15,8 +15,8 @@ use Piwik\Piwik;
 use Piwik\Plugin\ConsoleCommand;
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
 use Piwik\Plugins\DeviceDetectorCache\Configuration;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Matomo\Dependencies\Symfony\Component\Console\Input\InputInterface;
+use Matomo\Dependencies\Symfony\Component\Console\Output\OutputInterface;
 
 class WarmDeviceDetectorCache extends ConsoleCommand
 {
