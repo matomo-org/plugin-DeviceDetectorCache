@@ -15,8 +15,6 @@ use Piwik\Piwik;
 use Piwik\Plugin\ConsoleCommand;
 use Piwik\Plugins\DeviceDetectorCache\CachedEntry;
 use Piwik\Plugins\DeviceDetectorCache\Configuration;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class WarmDeviceDetectorCache extends ConsoleCommand
 {
@@ -38,37 +36,38 @@ class WarmDeviceDetectorCache extends ConsoleCommand
         $this->setDescription('Cached device detector information based on access log');
     }
 
-    private function printupdate($count, OutputInterface $output)
+    private function printupdate($count)
     {
-        if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+        if ($this->getOutput()->isVerbose()) {
             $mem = round(memory_get_peak_usage() / 1024 / 1024);
             $now = Date::now()->getDatetime();
-            $output->writeln("Count: " . $count . ' Mem:' . $mem . 'MB Date: ' . $now);
+            $this->getOutput()->writeln("Count: " . $count . ' Mem:' . $mem . 'MB Date: ' . $now);
         }
     }
 
-    private function log($message, OutputInterface $output)
+    private function log($message)
     {
-        if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+        if ($this->getOutput()->isVerbose()) {
             $mem = round(memory_get_peak_usage() / 1024 / 1024);
             $now = Date::now()->getDatetime();
-            $output->writeln($message . ' Mem:' . $mem . 'MB Date: ' . $now);
+            $this->getOutput()->writeln($message . ' Mem:' . $mem . 'MB Date: ' . $now);
         }
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(): int
     {
         $userAgents = [];
 
+        $output = $this->getOutput();
         $regex = $this->config->getAccessLogRegex();
         $numEntriesToCache = $this->config->getNumEntriesToCache();
         $matchEntry = $this->config->getRegexMatchEntry();
         $path = $this->config->getAccessLogPath();
         $path = trim($path);
 
-        $this->log('caching up to ' . $numEntriesToCache . ' entries', $output);
-        $this->log('reading from file ' . $path, $output);
-        $this->log('used regex ' . $regex . ' with index ' . $matchEntry, $output);
+        $this->log('caching up to ' . $numEntriesToCache . ' entries');
+        $this->log('reading from file ' . $path);
+        $this->log('used regex ' . $regex . ' with index ' . $matchEntry);
 
         if (empty($numEntriesToCache)) {
             $output->writeln('No entries are supposed to be cached. Stopping command');
@@ -103,7 +102,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
                         $userAgents[$useragent] = 1;
                         $count = count($userAgents);
                         if ($count % 10000 === 0) {
-                            $this->printupdate($count, $output);
+                            $this->printupdate($count);
                         }
                     } else {
                         $userAgents[$useragent] = $userAgents[$useragent] + 1;
@@ -127,8 +126,8 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             throw new \Exception('Error opening file. Maybe no read permission? Path: ' . $path);
         }
 
-        $this->log("parsed file: " . $numLinesProcessed . " lines", $output);
-        $this->printupdate($count, $output);
+        $this->log("parsed file: " . $numLinesProcessed . " lines");
+        $this->printupdate($count);
 
         arsort($userAgents, SORT_NATURAL);
 
@@ -137,8 +136,8 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             return self::SUCCESS;
         }
 
-        $this->log($count . ' user agents found', $output);
-        $this->log("writing files", $output);
+        $this->log($count . ' user agents found');
+        $this->log("writing files");
 
         $i = 0;
         $numRequestsDetected = 0;
@@ -158,10 +157,12 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             $numRequestsDetected += $val; // useful to detect hit ratio
 
             if ($i % 5000 === 0) {
-                $this->printupdate('written files so far: ' . $i . ' detecting that many requests: ' . $numRequestsDetected, $output);
+                $this->printupdate(
+                    'written files so far: ' . $i . ' detecting that many requests: ' . $numRequestsDetected
+                );
             }
             if ($i <= 10) {
-                $this->log('Found user agent ' . $agent . ' count: ' . $val, $output);
+                $this->log('Found user agent ' . $agent . ' count: ' . $val);
             }
             CachedEntry::writeToCache($agent, []);
             // sleep 2ms to let CPU do something else
