@@ -1,1 +1,5 @@
-{}
+{
+    "DeviceDetectorCache": {
+        "PluginDescription": "Ubrzava praćenje otkrivanjem mnogih uređaja, operacijskih sustava, robota i preglednika iz predmemorije."
+    }
+}
