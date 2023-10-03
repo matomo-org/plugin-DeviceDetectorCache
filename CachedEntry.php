@@ -28,16 +28,16 @@ class CachedEntry extends DeviceDetector
         $clientHints = $clientHints ? ClientHints::factory($clientHints) : null;
         parent::__construct($userAgent, $clientHints);
 
-        $this->bot = $values['bot'];
-        $this->brand = $values['brand'];
-        $this->client = $values['client'];
-        $this->device = $values['device'];
-        $this->model = $values['model'];
-        $this->os = $values['os'];
+        $this->bot = $values['bot'] ?? '';
+        $this->brand = $values['brand'] ?? '';
+        $this->client = $values['client'] ?? '';
+        $this->device = $values['device'] ?? '';
+        $this->model = $values['model'] ?? '';
+        $this->os = $values['os'] ?? '';
 
         // Or cached entries only use the useragents, so if we have some client hints provided,
         // We use some special parsers, which use the cached user agent result and parses it again using client hints
-        if (!empty($clientHints) && $values['client']['type'] === 'browser') {
+        if (!empty($clientHints) && !empty($values['client']['type']) && $values['client']['type'] === 'browser') {
             $browserParser = new CachedBrowserParser($userAgent, $clientHints);
             $browserParser->setCachedResult($this->client);
             $this->client = $browserParser->parse();

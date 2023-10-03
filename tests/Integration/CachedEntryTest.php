@@ -34,6 +34,95 @@ class CachedEntryTest extends ConsoleCommandTestCase
         Filesystem::unlinkRecursive(CachedEntry::getCacheDir(), true);
     }
 
+    public function testConstructEmptyParams()
+    {
+        $instance = new CachedEntry('', [], []);
+        $this->assertIsObject($instance);
+        $this->assertInstanceOf(CachedEntry::class, $instance);
+    }
+
+    public function testConstructSomeValues()
+    {
+        $values = [
+            'bot' => 'testBot',
+            'brand' => 'testBrand',
+            'client'=> 'testClient',
+            'device'=> 2,
+            'model'=> 'testModel',
+            'os' => 'testOs',
+        ];
+
+        $instance = new CachedEntry('', [], $values);
+        $this->assertIsObject($instance);
+        $this->assertInstanceOf(CachedEntry::class, $instance);
+        $this->assertSame($values['bot'], $instance->getBot());
+        $this->assertSame($values['brand'], $instance->getBrandName());
+        $this->assertSame($values['client'], $instance->getClient());
+        $this->assertSame($values['device'], $instance->getDevice());
+        $this->assertSame($values['model'], $instance->getModel());
+        $this->assertSame($values['os'], $instance->getOs());
+    }
+
+    public function testConstruct()
+    {
+        $userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36 Edg/97.0.1072.66";
+
+        $values  = [
+            'bot'    => null,
+            'brand'  => '',
+            'client' => [
+                'type' => 'browser',
+                'name' => 'Microsoft Edge',
+                'version' => '97.0.1072.66'
+            ],
+            'device' => 1,
+            'model'  => '',
+            'os'     => [
+                'name' => 'Windows',
+                'version' => '10',
+            ],
+        ];
+
+        $clientHints = [
+            'HTTP_SEC_CH_UA_PLATFORM' => '"Windows"',
+            'HTTP_SEC_CH_UA' => '" Not A;Brand";v="99", "Chromium";v="95", "Microsoft Edge";v="95"',
+            'HTTP_SEC_CH_UA_MOBILE' => "?0",
+            'HTTP_SEC_CH_UA_FULL_VERSION' => '"98.0.0.1"',
+            'HTTP_SEC_CH_UA_PLATFORM_VERSION' => '"14.0.0"',
+            'HTTP_SEC_CH_UA_ARCH' => "x86",
+            'HTTP_SEC_CH_UA_BITNESS' => "64",
+            'HTTP_SEC_CH_UA_MODEL' => ""
+        ];
+
+        $expectedClient = [
+            'type' => 'browser',
+            'name' => 'Microsoft Edge',
+            'short_name' => 'PS',
+            'version' => '98.0',
+            'engine' => '',
+            'engine_version' => '',
+            'family' => 'Internet Explorer',
+        ];
+
+        $expectedOs = [
+            'name' => 'Windows',
+            'short_name' => 'WIN',
+            'version' => '11',
+            'platform' => 'x64',
+            'family' => 'Windows',
+        ];
+
+        $instance = new CachedEntry($userAgent, $clientHints, $values);
+        $this->assertIsObject($instance);
+        $this->assertInstanceOf(CachedEntry::class, $instance);
+        $this->assertSame('', $instance->getBot());
+        $this->assertSame($values['brand'], $instance->getBrandName());
+        $this->assertSame($expectedClient, $instance->getClient());
+        $this->assertSame($values['device'], $instance->getDevice());
+        $this->assertSame($values['model'], $instance->getModel());
+        $this->assertSame($expectedOs, $instance->getOs());
+    }
+
     public function testGetNumCacheFiles_noneCached()
     {
         $this->assertEquals(0, CachedEntry::getNumEntriesInCacheDir());
