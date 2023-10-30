@@ -1,1 +1,5 @@
-{}
+{
+    "DeviceDetectorCache": {
+        "PluginDescription": "Jarraipena azkartzen du, hainbat gailu, sistema eragile, bot eta nabigatzaile cache batetik detektatuz."
+    }
+}
