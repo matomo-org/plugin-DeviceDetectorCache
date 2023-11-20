@@ -115,11 +115,46 @@ class CachedEntryTest extends ConsoleCommandTestCase
         $instance = new CachedEntry($userAgent, $clientHints, $values);
         $this->assertIsObject($instance);
         $this->assertInstanceOf(CachedEntry::class, $instance);
-        $this->assertSame('', $instance->getBot());
+        $this->assertSame(null, $instance->getBot());
         $this->assertSame($values['brand'], $instance->getBrandName());
         $this->assertSame($expectedClient, $instance->getClient());
         $this->assertSame($values['device'], $instance->getDevice());
         $this->assertSame($values['model'], $instance->getModel());
+        $this->assertSame($expectedOs, $instance->getOs());
+    }
+
+    public function testConstructDefault()
+    {
+        $userAgent = "unknown";
+
+        $clientHints = [
+            'HTTP_SEC_CH_UA_PLATFORM' => '"Windows"',
+            'HTTP_SEC_CH_UA' => '" Not A;Brand";v="99", "Chromium";v="95", "Microsoft Edge";v="95"',
+            'HTTP_SEC_CH_UA_MOBILE' => "?0",
+            'HTTP_SEC_CH_UA_FULL_VERSION' => '"98.0.0.1"',
+            'HTTP_SEC_CH_UA_PLATFORM_VERSION' => '"14.0.0"',
+            'HTTP_SEC_CH_UA_ARCH' => "x86",
+            'HTTP_SEC_CH_UA_BITNESS' => "64",
+            'HTTP_SEC_CH_UA_MODEL' => ""
+        ];
+
+        $expectedOs = [
+            'name' => 'Windows',
+            'short_name' => 'WIN',
+            'version' => '11',
+            'platform' => 'x64',
+            'family' => 'Windows',
+        ];
+
+
+        $instance = new CachedEntry($userAgent, $clientHints, []);
+        $this->assertIsObject($instance);
+        $this->assertInstanceOf(CachedEntry::class, $instance);
+        $this->assertSame(null, $instance->getBot());
+        $this->assertSame('', $instance->getBrandName());
+        $this->assertSame(null, $instance->getClient());
+        $this->assertSame(null, $instance->getDevice());
+        $this->assertSame('', $instance->getModel());
         $this->assertSame($expectedOs, $instance->getOs());
     }
 
