@@ -33,7 +33,7 @@ class CachedEntry extends DeviceDetector
         $this->client = $values['client'] ?? null;
         $this->device = $values['device'] ?? null;
         $this->model = $values['model'] ?? '';
-        $this->os = $values['os'] ?? '';
+        $this->os = $values['os'] ?? null;
 
         // Or cached entries only use the useragents, so if we have some client hints provided,
         // We use some special parsers, which use the cached user agent result and parses it again using client hints
