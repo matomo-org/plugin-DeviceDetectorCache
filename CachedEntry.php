@@ -28,10 +28,10 @@ class CachedEntry extends DeviceDetector
         $clientHints = $clientHints ? ClientHints::factory($clientHints) : null;
         parent::__construct($userAgent, $clientHints);
 
-        $this->bot = $values['bot'] ?? '';
+        $this->bot = $values['bot'] ?? null;
         $this->brand = $values['brand'] ?? '';
-        $this->client = $values['client'] ?? '';
-        $this->device = $values['device'] ?? '';
+        $this->client = $values['client'] ?? null;
+        $this->device = $values['device'] ?? null;
         $this->model = $values['model'] ?? '';
         $this->os = $values['os'] ?? '';
 
