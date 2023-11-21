@@ -1,5 +1,8 @@
 ## Changelog
 
+5.0.2
+- Fixes errors due to incorrect default values
+
 5.0.1
 - Fixes errors from undefined indexes
 
