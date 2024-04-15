@@ -18,5 +18,6 @@
   },
   "homepage": "https://matomo.org",
   "license": "GPL v3+",
-  "keywords": ["device", "detector", "tracking", "performance"]
+  "keywords": ["device", "detector", "tracking", "performance"],
+  "category": "database"
 }
