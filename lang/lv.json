@@ -1,1 +1,5 @@
-{}
+{
+    "DeviceDetectorCache": {
+        "PluginDescription": "Padara izsekošanu ātrāku, atpazīstot daudzas ierīces, operētājsistēmas, botus un pārlūkprogrammas no kešatmiņas."
+    }
+}
