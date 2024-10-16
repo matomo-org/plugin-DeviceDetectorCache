@@ -46,9 +46,9 @@ class CachedEntryTest extends ConsoleCommandTestCase
         $values = [
             'bot' => 'testBot',
             'brand' => 'testBrand',
-            'client'=> 'testClient',
-            'device'=> 2,
-            'model'=> 'testModel',
+            'client' => 'testClient',
+            'device' => 2,
+            'model' => 'testModel',
             'os' => 'testOs',
         ];
 

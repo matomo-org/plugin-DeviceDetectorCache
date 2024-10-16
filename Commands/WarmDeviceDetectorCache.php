@@ -18,7 +18,7 @@ use Piwik\Plugins\DeviceDetectorCache\Configuration;
 
 class WarmDeviceDetectorCache extends ConsoleCommand
 {
-    const COMMAND_NAME = 'device-detector-cache:warm-cache';
+    public const COMMAND_NAME = 'device-detector-cache:warm-cache';
     /**
      * @var Configuration
      */
