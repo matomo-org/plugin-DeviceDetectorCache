@@ -13,17 +13,17 @@ use Piwik\Config;
 
 class Configuration
 {
-    const KEY_NumEntriesToCache = 'num_cache_entries';
-    const DEFAULT_NumEntriesToCache = 200000;
+    public const KEY_NUM_ENTRIES_TO_CACHE = 'num_cache_entries';
+    public const DEFAULT_NUM_ENTRIES_TO_CACHE = 200000;
 
-    const KEY_AccessLogRegex = 'access_log_regex';
-    const DEFAULT_AccessLogRegex = '/^(\S+) (\S+) (\S+) (\S+) \[([^:]+):(\d+:\d+:\d+) ([^\]]+)\] \"(\S+) (.*?) (\S+)\" (\S+) (\S+) "([^"]*)" "([^"]*)" (\d+)$/';
+    public const KEY_ACCESS_LOG_REGEX = 'access_log_regex';
+    public const DEFAULT_ACCESS_LOG_REGEX = '/^(\S+) (\S+) (\S+) (\S+) \[([^:]+):(\d+:\d+:\d+) ([^\]]+)\] \"(\S+) (.*?) (\S+)\" (\S+) (\S+) "([^"]*)" "([^"]*)" (\d+)$/';
 
-    const KEY_AccessLogRegexMatchEntry = 'regex_match_entry';
-    const DEFAULT_AccessLogRegexMatchEntry = 14;
+    public const KEY_ACCESS_LOG_REGEX_MATCH_ENTRY = 'regex_match_entry';
+    public const DEFAULT_ACCESS_LOG_REGEX_MATCH_ENTRY = 14;
 
-    const KEY_AccessLogPath = 'access_log_path';
-    const DEFAULT_AccessLogPath = '/var/log/httpd/access_log';
+    public const KEY_ACCESS_LOG_PATH = 'access_log_path';
+    public const DEFAULT_ACCESS_LOG_PATH = '/var/log/httpd/access_log';
 
     public function install()
     {
@@ -36,17 +36,17 @@ class Configuration
         $cache = $config->DeviceDetectorCache;
 
         // we make sure to set a value only if none has been configured yet, eg in common config.
-        if (empty($cache[self::KEY_NumEntriesToCache])) {
-            $cache[self::KEY_NumEntriesToCache] = self::DEFAULT_NumEntriesToCache;
+        if (empty($cache[self::KEY_NUM_ENTRIES_TO_CACHE])) {
+            $cache[self::KEY_NUM_ENTRIES_TO_CACHE] = self::DEFAULT_NUM_ENTRIES_TO_CACHE;
         }
-        if (empty($cache[self::KEY_AccessLogPath])) {
-            $cache[self::KEY_AccessLogPath] = self::DEFAULT_AccessLogPath;
+        if (empty($cache[self::KEY_ACCESS_LOG_PATH])) {
+            $cache[self::KEY_ACCESS_LOG_PATH] = self::DEFAULT_ACCESS_LOG_PATH;
         }
-        if (empty($cache[self::KEY_AccessLogRegex])) {
-            $cache[self::KEY_AccessLogRegex] = self::DEFAULT_AccessLogRegex;
+        if (empty($cache[self::KEY_ACCESS_LOG_REGEX])) {
+            $cache[self::KEY_ACCESS_LOG_REGEX] = self::DEFAULT_ACCESS_LOG_REGEX;
         }
-        if (empty($cache[self::KEY_AccessLogRegexMatchEntry])) {
-            $cache[self::KEY_AccessLogRegexMatchEntry] = self::DEFAULT_AccessLogRegexMatchEntry;
+        if (empty($cache[self::KEY_ACCESS_LOG_REGEX_MATCH_ENTRY])) {
+            $cache[self::KEY_ACCESS_LOG_REGEX_MATCH_ENTRY] = self::DEFAULT_ACCESS_LOG_REGEX_MATCH_ENTRY;
         }
 
         $config->DeviceDetectorCache = $cache;
@@ -66,7 +66,7 @@ class Configuration
      */
     public function getAccessLogPath()
     {
-        return $this->getConfigValue(self::KEY_AccessLogPath, self::DEFAULT_AccessLogPath);
+        return $this->getConfigValue(self::KEY_ACCESS_LOG_PATH, self::DEFAULT_ACCESS_LOG_PATH);
     }
 
     /**
@@ -74,7 +74,7 @@ class Configuration
      */
     public function getAccessLogRegex()
     {
-        return $this->getConfigValue(self::KEY_AccessLogRegex, self::DEFAULT_AccessLogRegex);
+        return $this->getConfigValue(self::KEY_ACCESS_LOG_REGEX, self::DEFAULT_ACCESS_LOG_REGEX);
     }
 
     /**
@@ -82,7 +82,7 @@ class Configuration
      */
     public function getRegexMatchEntry()
     {
-        return (int)$this->getConfigValue(self::KEY_AccessLogRegexMatchEntry, self::DEFAULT_AccessLogRegexMatchEntry);
+        return (int)$this->getConfigValue(self::KEY_ACCESS_LOG_REGEX_MATCH_ENTRY, self::DEFAULT_ACCESS_LOG_REGEX_MATCH_ENTRY);
     }
 
     /**
@@ -90,7 +90,7 @@ class Configuration
      */
     public function getNumEntriesToCache()
     {
-        return (int)$this->getConfigValue(self::KEY_NumEntriesToCache, self::DEFAULT_NumEntriesToCache);
+        return (int)$this->getConfigValue(self::KEY_NUM_ENTRIES_TO_CACHE, self::DEFAULT_NUM_ENTRIES_TO_CACHE);
     }
 
     private function getConfig()

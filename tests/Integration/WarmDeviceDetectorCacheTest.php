@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -26,7 +27,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
     public function setUp(): void
     {
         parent::setUp();
-        CachedEntry::setCacheDir(PIWIK_DOCUMENT_ROOT. '/tmp/devicecachetests/');
+        CachedEntry::setCacheDir(PIWIK_DOCUMENT_ROOT . '/tmp/devicecachetests/');
         CachedEntry::clearCacheDir();
     }
 
@@ -41,7 +42,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
     {
         $config                              = \Piwik\Config::getInstance();
         $d                                   = $config->DeviceDetectorCache;
-        $d[Configuration::KEY_AccessLogPath] = $file;
+        $d[Configuration::KEY_ACCESS_LOG_PATH] = $file;
         $config->DeviceDetectorCache         = $d;
     }
 
@@ -49,7 +50,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
     {
         $config                                  = \Piwik\Config::getInstance();
         $d                                       = $config->DeviceDetectorCache;
-        $d[Configuration::KEY_NumEntriesToCache] = $numEntries;
+        $d[Configuration::KEY_NUM_ENTRIES_TO_CACHE] = $numEntries;
         $config->DeviceDetectorCache             = $d;
     }
 
