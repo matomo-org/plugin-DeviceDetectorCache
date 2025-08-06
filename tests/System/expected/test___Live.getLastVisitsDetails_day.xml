@@ -114,6 +114,8 @@
 		<referrerSearchEngineIcon />
 		<referrerSocialNetworkUrl />
 		<referrerSocialNetworkIcon />
+		<referrerAIAssistantUrl />
+		<referrerAIAssistantIcon />
 		<languageCode>fr</languageCode>
 		<language>French</language>
 		<deviceType>Smartphone</deviceType>
@@ -241,6 +243,8 @@
 		<referrerSearchEngineIcon />
 		<referrerSocialNetworkUrl />
 		<referrerSocialNetworkIcon />
+		<referrerAIAssistantUrl />
+		<referrerAIAssistantIcon />
 		<languageCode>fr</languageCode>
 		<language>French</language>
 		<deviceType>Desktop</deviceType>
