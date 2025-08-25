@@ -51,9 +51,9 @@
 				<items>1</items>
 				
 				
-				
-				
-				
+				<referrerType>direct</referrerType>
+				<referrerName />
+				<referrerKeyword />
 				<itemDetails>
 					<row>
 						<itemSKU>SKU_ID2</itemSKU>
@@ -104,10 +104,10 @@
 		<searches>1</searches>
 		<actions>2</actions>
 		<interactions>2</interactions>
-		
+		<referrerType>direct</referrerType>
 		<referrerTypeName>Direct Entry</referrerTypeName>
-		
-		
+		<referrerName />
+		<referrerKeyword />
 		<referrerKeywordPosition />
 		<referrerUrl />
 		<referrerSearchEngineUrl />
@@ -233,10 +233,10 @@
 		<searches>0</searches>
 		<actions>1</actions>
 		<interactions>1</interactions>
-		
+		<referrerType>direct</referrerType>
 		<referrerTypeName>Direct Entry</referrerTypeName>
-		
-		
+		<referrerName />
+		<referrerKeyword />
 		<referrerKeywordPosition />
 		<referrerUrl />
 		<referrerSearchEngineUrl />
