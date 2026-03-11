@@ -106,9 +106,12 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
 
     public function testDoesClearExistingFilesFromCacheByDefaultWhenTooManyEntriesExist()
     {
-        // was last accessed
-        $userAgentKept     = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
-        $userAgentDeleted  = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36';
+        // The first user agent is the most frequent entry in useragents1.csv, so the second warm
+        // run will read it from cache again and should therefore keep it after eviction.
+        $userAgentKept = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36';
+        // This entry is less frequent and should be one of the files evicted once the cache is
+        // reduced back down to a single entry.
+        $userAgentDeleted = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
         $cacheFilePathKept = CachedEntry::getCachePath($userAgentKept, true);
         $cacheFilePathDeleted = CachedEntry::getCachePath($userAgentDeleted, true);
 
@@ -128,7 +131,8 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
 
         $this->setCountProcessNumEntries(1);
 
-        // now we run again and it should delete 2 of the entries
+        // Re-running with a single allowed entry exercises the same request path as production:
+        // the kept entry is read again, its atime is refreshed, and eviction should delete older files.
         $this->applicationTester->run([
             'command' => WarmDeviceDetectorCache::COMMAND_NAME,
         ]);
@@ -136,7 +140,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $this->assertEquals(1, CachedEntry::getNumEntriesInCacheDir());
 
         $this->assertFileExists($cacheFilePathKept);
-        $this->assertFileNotExists($cacheFilePathDeleted);
+        $this->assertFileMissing($cacheFilePathDeleted);
     }
 
     public function testDoesntProcessAllRowsWhenCounterSet()
@@ -179,7 +183,7 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
     private function assertUserAgentNotWrittenToFile($userAgent)
     {
         $expectedFilePath = CachedEntry::getCachePath($userAgent);
-        $this->assertFileNotExists($expectedFilePath);
+        $this->assertFileMissing($expectedFilePath);
     }
 
     private function assertUserAgentWrittenToFile($userAgent)
@@ -203,5 +207,15 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $this->assertEquals($deviceDetectionParsed->getDevice(), $deviceDetectionFromFile->getDevice());
         $this->assertEquals($deviceDetectionParsed->getModel(), $deviceDetectionFromFile->getModel());
         $this->assertEquals($deviceDetectionParsed->getOs(), $deviceDetectionFromFile->getOs());
+    }
+
+    private function assertFileMissing(string $path): void
+    {
+        if (method_exists($this, 'assertFileDoesNotExist')) {
+            $this->assertFileDoesNotExist($path);
+            return;
+        }
+
+        $this->assertFileNotExists($path);
     }
 }

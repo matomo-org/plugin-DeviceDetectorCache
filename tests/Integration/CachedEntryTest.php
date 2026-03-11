@@ -190,6 +190,18 @@ class CachedEntryTest extends ConsoleCommandTestCase
         );
     }
 
+    public function testGetCached_refreshesAccessTime()
+    {
+        $filePath = CachedEntry::writeToCache('foo', []);
+        $accessTimeBefore = fileatime($filePath);
+
+        sleep(1);
+        CachedEntry::getCached('foo', []);
+        clearstatcache(true, $filePath);
+
+        $this->assertGreaterThan($accessTimeBefore, fileatime($filePath));
+    }
+
     public function test_getCachePath()
     {
         $path1 = CachedEntry::getCachePath('foo');
@@ -224,18 +236,20 @@ class CachedEntryTest extends ConsoleCommandTestCase
     public function test_deleteLeastAccessedFiles_deletesOnlyOldest()
     {
         $filePath1 = CachedEntry::writeToCache('file', []);
-        sleep(1); // otherwise without sleep the sorting won't work properly
         $filePath2 = CachedEntry::writeToCache('bar', []);
-        sleep(1);
         $filePath3 = CachedEntry::writeToCache('baz', []);
-        sleep(1);
         $filePath4 = CachedEntry::writeToCache('foo', []);
-        sleep(1);
+
+        // Set explicit timestamps so the eviction order does not depend on filesystem precision.
+        $this->setFileTimestamp($filePath1, 100);
+        $this->setFileTimestamp($filePath2, 200);
+        $this->setFileTimestamp($filePath3, 300);
+        $this->setFileTimestamp($filePath4, 400);
 
         CachedEntry::deleteLeastAccessedFiles(2);
 
-        $this->assertFileNotExists($filePath1);
-        $this->assertFileNotExists($filePath2);
+        $this->assertFileMissing($filePath1);
+        $this->assertFileMissing($filePath2);
         $this->assertFileExists($filePath3);
         $this->assertFileExists($filePath4);
     }
@@ -243,23 +257,37 @@ class CachedEntryTest extends ConsoleCommandTestCase
     public function test_deleteLeastAccessedFiles_deletesOnlyOldest2()
     {
         $filePath1 = CachedEntry::writeToCache('file', []);
-        sleep(1);
         $filePath2 = CachedEntry::writeToCache('bar', []);
-        sleep(1);
         $filePath3 = CachedEntry::writeToCache('baz', []);
-        sleep(1);
         $filePath4 = CachedEntry::writeToCache('foo', []);
-        sleep(1);
 
-        touch($filePath1);
-        sleep(1);
-        touch($filePath3);
+        // Simulate cache hits by moving selected files to the newest timestamps explicitly.
+        $this->setFileTimestamp($filePath1, 300);
+        $this->setFileTimestamp($filePath2, 100);
+        $this->setFileTimestamp($filePath3, 400);
+        $this->setFileTimestamp($filePath4, 200);
 
         CachedEntry::deleteLeastAccessedFiles(2);
 
-        $this->assertFileNotExists($filePath2);
-        $this->assertFileNotExists($filePath4);
+        $this->assertFileMissing($filePath2);
+        $this->assertFileMissing($filePath4);
         $this->assertFileExists($filePath1);
         $this->assertFileExists($filePath3);
+    }
+
+    private function assertFileMissing(string $path): void
+    {
+        if (method_exists($this, 'assertFileDoesNotExist')) {
+            $this->assertFileDoesNotExist($path);
+            return;
+        }
+
+        $this->assertFileNotExists($path);
+    }
+
+    private function setFileTimestamp(string $path, int $timestamp): void
+    {
+        touch($path, $timestamp, $timestamp);
+        clearstatcache(true, $path);
     }
 }

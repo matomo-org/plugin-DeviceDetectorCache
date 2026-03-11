@@ -60,6 +60,9 @@ class CachedEntry extends DeviceDetector
         if ($exists) {
             $values = @include($path);
             if (!empty($values) && is_array($values) && isset($values['os'])) {
+                // Keep the filesystem access metadata in sync with cache reads so later eviction
+                // can preserve entries that were just reused during the warm-cache command.
+                self::refreshAccessTime($path);
                 return $values;
             }
         }
@@ -165,6 +168,26 @@ class CachedEntry extends DeviceDetector
         });
     }
 
+    private static function refreshAccessTime(string $path): void
+    {
+        // Read the current mtime first so we can move the cache file's recency marker forward even
+        // when the file was created earlier in the same second as the cache hit.
+        $modifiedTime = @filemtime($path);
+        if ($modifiedTime === false) {
+            return;
+        }
+
+        // Use a strictly newer timestamp for both mtime and atime so cache eviction has a stable
+        // ordering even on filesystems with one-second timestamp granularity.
+        $refreshedTime = max(time(), $modifiedTime + 1);
+
+        // Refresh the stat cache around touch() so the subsequent file metadata reads in the same
+        // PHP process observe the updated recency instead of stale stat data.
+        clearstatcache(true, $path);
+        @touch($path, $refreshedTime, $refreshedTime);
+        clearstatcache(true, $path);
+    }
+
     public static function deleteLeastAccessedFiles(int $numFilesToDelete): void
     {
         if ($numFilesToDelete < 1) {
@@ -173,11 +196,13 @@ class CachedEntry extends DeviceDetector
         $files = self::getCacheFilesInCacheDir();
         $accessed = [];
         foreach ($files as $file) {
-            $accessed[$file] = fileatime($file);
+            // Read the same recency marker that getCached() updates so eviction keeps the cache
+            // entry that was actually reused during the current warm-cache run.
+            $accessed[$file] = self::getLastAccessTimestamp($file);
         }
 
         // have most recently accessed files at the end of the array and delete entries from the beginning of the array
-        asort($accessed, SORT_NATURAL);
+        asort($accessed, SORT_NUMERIC);
 
         $numFilesDeleted = 1;
         foreach ($accessed as $file => $time) {
@@ -188,5 +213,19 @@ class CachedEntry extends DeviceDetector
                 $numFilesDeleted++;
             }
         }
+    }
+
+    private static function getLastAccessTimestamp(string $path): int
+    {
+        // Clear stat cache before reading metadata so the eviction pass sees the timestamp updates
+        // performed earlier in the same process by refreshAccessTime().
+        clearstatcache(true, $path);
+
+        // Prefer the newest of atime and mtime because refreshAccessTime() updates both values to
+        // give us a deterministic recency order on filesystems with coarse timestamp precision.
+        $accessTime = @fileatime($path);
+        $modifiedTime = @filemtime($path);
+
+        return max((int) $accessTime, (int) $modifiedTime);
     }
 }
