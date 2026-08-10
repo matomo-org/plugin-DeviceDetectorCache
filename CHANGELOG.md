@@ -1,5 +1,8 @@
 ## Changelog
 
+6.0.0
+- Compatibility with Matomo 6.X
+
 5.0.3
 - Added plugin category for Marketplace
 
