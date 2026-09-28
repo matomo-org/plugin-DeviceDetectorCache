@@ -164,7 +164,7 @@ class WarmDeviceDetectorCache extends ConsoleCommand
             if ($i <= 10) {
                 $this->log('Found user agent ' . $agent . ' count: ' . $val);
             }
-            CachedEntry::writeToCache($agent, []);
+            CachedEntry::writeToCache($agent);
             // sleep 2ms to let CPU do something else
             // this will make things about 10m slower for 200K entries but at least sudden CPU increase for instance
             // can be prevented when there are only few CPUs available

@@ -23,7 +23,7 @@ class CachedEntry extends DeviceDetector
     private static $CACHE_DIR = '';
     private static $customCache = null;
 
-    public function __construct(string $userAgent, $clientHints, array $values)
+    public function __construct(string $userAgent, array $clientHints, array $values)
     {
         $clientHints = $clientHints ? ClientHints::factory($clientHints) : null;
         parent::__construct($userAgent, $clientHints);
