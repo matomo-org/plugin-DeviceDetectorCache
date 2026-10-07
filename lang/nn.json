@@ -1,1 +1,5 @@
-{}
+{
+    "DeviceDetectorCache": {
+        "PluginDescription": "Gjer sporinga raskare ved å gjenkjenne mange einingar, operativsystem, botar og nettlesarar frå eit mellomlager."
+    }
+}
