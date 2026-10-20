@@ -78,7 +78,7 @@ class Configuration
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getRegexMatchEntry()
     {
@@ -86,7 +86,7 @@ class Configuration
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getNumEntriesToCache()
     {
