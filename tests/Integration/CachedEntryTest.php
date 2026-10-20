@@ -73,7 +73,9 @@ class CachedEntryTest extends ConsoleCommandTestCase
             'client' => [
                 'type' => 'browser',
                 'name' => 'Microsoft Edge',
-                'version' => '97.0.1072.66'
+                'version' => '97.0.1072.66',
+                'engine' => 'Blink',
+                'engine_version' => '97.0.4692.71',
             ],
             'device' => 1,
             'model'  => '',
@@ -99,8 +101,8 @@ class CachedEntryTest extends ConsoleCommandTestCase
             'name' => 'Microsoft Edge',
             'short_name' => 'PS',
             'version' => '98.0',
-            'engine' => '',
-            'engine_version' => '',
+            'engine' => 'Blink',
+            'engine_version' => '98.0',
             'family' => 'Internet Explorer',
         ];
 
