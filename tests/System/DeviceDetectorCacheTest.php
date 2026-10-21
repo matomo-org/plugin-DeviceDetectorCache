@@ -58,7 +58,8 @@ class DeviceDetectorCacheTest extends SystemTestCase
                 'idSite'     => 1,
                 'date'       => self::$fixture->dateTime,
                 'periods'    => ['day'],
-                'testSuffix' => '',
+                // In Matomo 6.0.0-b6 the time on page calculation had been changed
+                'testSuffix' => version_compare(Version::VERSION, '6.0.0-b6', '<') ? 'Old' : '',
                 'xmlFieldsToRemove' => $columnsToHide,
             ],
         ];
