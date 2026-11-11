@@ -86,13 +86,10 @@ class CachedEntry extends DeviceDetector
             return;
         }
 
-        $modifiedTime = @filemtime($path);
-        if ($modifiedTime === false) {
-            return;
-        }
-
-        // keep the modification time, only move the access time; failures (e.g. read-only cache dir) must not break tracking
-        @touch($path, $modifiedTime, time());
+        // touch() without explicit times only needs write permission, while explicit times require owning the file,
+        // which the tracker often doesn't when the warm command runs as another user. This also moves the mtime,
+        // which nothing relies on. Failures (e.g. read-only cache dir) must not break tracking.
+        @touch($path);
     }
 
     public static function writeToCache(string $userAgent): ?string

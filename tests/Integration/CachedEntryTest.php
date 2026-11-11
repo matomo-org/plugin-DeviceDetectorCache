@@ -277,7 +277,38 @@ class CachedEntryTest extends ConsoleCommandTestCase
         clearstatcache();
 
         $this->assertGreaterThanOrEqual($before, fileatime($filePath));
-        $this->assertSame($agedTime, filemtime($filePath));
+    }
+
+    /**
+     * Calls markAsAccessed() directly, as reading the file in getCached() lets relatime mounts update
+     * the access time by themselves, which would hide a regression in the product code.
+     */
+    public function test_markAsAccessed_updatesAgedAccessTime()
+    {
+        $filePath = CachedEntry::writeToCache('foo');
+        $agedTime = time() - 2 * CachedEntry::ACCESS_TIME_UPDATE_THRESHOLD;
+        touch($filePath, $agedTime, $agedTime);
+        clearstatcache();
+
+        $before = time();
+        $this->callMarkAsAccessed($filePath);
+        clearstatcache();
+
+        $this->assertGreaterThanOrEqual($before, fileatime($filePath));
+    }
+
+    public function test_markAsAccessed_doesNotUpdateRecentAccessTime()
+    {
+        $filePath = CachedEntry::writeToCache('foo');
+        $recentTime = time() - CachedEntry::ACCESS_TIME_UPDATE_THRESHOLD + 3600;
+        touch($filePath, $recentTime, $recentTime);
+        clearstatcache();
+
+        $this->callMarkAsAccessed($filePath);
+        clearstatcache();
+
+        $this->assertSame($recentTime, fileatime($filePath));
+        $this->assertSame($recentTime, filemtime($filePath));
     }
 
     public function test_getCached_keepsMostRecentlyHitEntryOnEviction()
@@ -295,5 +326,11 @@ class CachedEntryTest extends ConsoleCommandTestCase
         $this->assertFileExists($filePaths['bar']);
         $this->assertFileDoesNotExist($filePaths['foo']);
         $this->assertFileDoesNotExist($filePaths['baz']);
+    }
+
+    private function callMarkAsAccessed(string $filePath): void
+    {
+        $method = new \ReflectionMethod(CachedEntry::class, 'markAsAccessed');
+        $method->invoke(null, $filePath);
     }
 }
