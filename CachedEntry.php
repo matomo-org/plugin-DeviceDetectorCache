@@ -20,6 +20,12 @@ use Piwik\Plugins\DeviceDetectorCache\DeviceDetector\CachedOperatingSystemParser
 
 class CachedEntry extends DeviceDetector
 {
+    /**
+     * Minimum age in seconds of a cache file's access time before a cache hit updates it again.
+     * Limits filesystem writes during tracking to at most one per cache file per day.
+     */
+    public const ACCESS_TIME_UPDATE_THRESHOLD = 86400;
+
     private static $CACHE_DIR = '';
     private static $customCache = null;
 
@@ -60,11 +66,33 @@ class CachedEntry extends DeviceDetector
         if ($exists) {
             $values = @include($path);
             if (!empty($values) && is_array($values) && isset($values['os'])) {
+                self::markAsAccessed($path);
                 return $values;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Records a cache hit in the file's access time, which deleteLeastAccessedFiles() uses for eviction.
+     * Reading the file isn't enough: opcache, noatime or relatime mounts mean a read often leaves atime unchanged.
+     */
+    private static function markAsAccessed(string $path): void
+    {
+        // served from the stat cache filled by file_exists() in getCached(), so no extra stat call
+        $accessTime = @fileatime($path);
+        if ($accessTime === false || $accessTime >= time() - self::ACCESS_TIME_UPDATE_THRESHOLD) {
+            return;
+        }
+
+        $modifiedTime = @filemtime($path);
+        if ($modifiedTime === false) {
+            return;
+        }
+
+        // keep the modification time, only move the access time; failures (e.g. read-only cache dir) must not break tracking
+        @touch($path, $modifiedTime, time());
     }
 
     public static function writeToCache(string $userAgent): ?string
@@ -170,6 +198,7 @@ class CachedEntry extends DeviceDetector
         if ($numFilesToDelete < 1) {
             return; // nothing to delete
         }
+        clearstatcache();
         $files = self::getCacheFilesInCacheDir();
         $accessed = [];
         foreach ($files as $file) {

@@ -106,11 +106,13 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
 
     public function testDoesClearExistingFilesFromCacheByDefaultWhenTooManyEntriesExist()
     {
-        // was last accessed
-        $userAgentKept     = 'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko';
-        $userAgentDeleted  = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36';
+        // most requested user agent in useragents1.csv, it is the only one processed (a cache hit) in the second run
+        $userAgentKept = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36';
+        $userAgentsDeleted = [
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Mobile/15E148 Safari/604.1',
+            'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
+        ];
         $cacheFilePathKept = CachedEntry::getCachePath($userAgentKept, true);
-        $cacheFilePathDeleted = CachedEntry::getCachePath($userAgentDeleted, true);
 
         $this->setCountProcessNumEntries(3);
 
@@ -122,13 +124,22 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
             'command' => WarmDeviceDetectorCache::COMMAND_NAME,
         ]);
         $this->assertFileExists($cacheFilePathKept);
-        $this->assertFileExists($cacheFilePathDeleted);
+        foreach ($userAgentsDeleted as $userAgent) {
+            $this->assertFileExists(CachedEntry::getCachePath($userAgent));
+        }
 
         $this->assertEquals(3, CachedEntry::getNumEntriesInCacheDir());
 
+        // age all entries beyond the access time update threshold, so the cache hit below is guaranteed to
+        // be the most recent access (fileatime() has 1 second resolution, the entries were written within ms)
+        $agedTime = time() - 2 * CachedEntry::ACCESS_TIME_UPDATE_THRESHOLD;
+        foreach (array_merge([$userAgentKept], $userAgentsDeleted) as $userAgent) {
+            touch(CachedEntry::getCachePath($userAgent), $agedTime, $agedTime);
+        }
+
         $this->setCountProcessNumEntries(1);
 
-        // now we run again and it should delete 2 of the entries
+        // now we run again, it hits the cache for the most requested user agent and should delete the 2 other entries
         $this->applicationTester->run([
             'command' => WarmDeviceDetectorCache::COMMAND_NAME,
         ]);
@@ -136,7 +147,9 @@ class WarmDeviceDetectorCacheTest extends ConsoleCommandTestCase
         $this->assertEquals(1, CachedEntry::getNumEntriesInCacheDir());
 
         $this->assertFileExists($cacheFilePathKept);
-        $this->assertFileNotExists($cacheFilePathDeleted);
+        foreach ($userAgentsDeleted as $userAgent) {
+            $this->assertFileDoesNotExist(CachedEntry::getCachePath($userAgent));
+        }
     }
 
     public function testDoesntProcessAllRowsWhenCounterSet()

@@ -1,5 +1,8 @@
 ## Changelog
 
+6.0.1
+- Cache hits now update the cache file's access time, so cache warming keeps the most used entries instead of the most recently written ones
+
 6.0.0
 - Compatibility with Matomo 6.X
 

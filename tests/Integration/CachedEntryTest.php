@@ -264,4 +264,36 @@ class CachedEntryTest extends ConsoleCommandTestCase
         $this->assertFileExists($filePath1);
         $this->assertFileExists($filePath3);
     }
+
+    public function test_getCached_updatesAccessTimeOnHit()
+    {
+        $filePath = CachedEntry::writeToCache('foo');
+        $agedTime = time() - 2 * CachedEntry::ACCESS_TIME_UPDATE_THRESHOLD;
+        touch($filePath, $agedTime, $agedTime);
+        clearstatcache();
+
+        $before = time();
+        $this->assertNotEmpty(CachedEntry::getCached('foo'));
+        clearstatcache();
+
+        $this->assertGreaterThanOrEqual($before, fileatime($filePath));
+        $this->assertSame($agedTime, filemtime($filePath));
+    }
+
+    public function test_getCached_keepsMostRecentlyHitEntryOnEviction()
+    {
+        $agedTime = time() - 2 * CachedEntry::ACCESS_TIME_UPDATE_THRESHOLD;
+        $filePaths = [];
+        foreach (['foo', 'bar', 'baz'] as $userAgent) {
+            $filePaths[$userAgent] = CachedEntry::writeToCache($userAgent);
+            touch($filePaths[$userAgent], $agedTime, $agedTime);
+        }
+
+        CachedEntry::getCached('bar');
+        CachedEntry::deleteLeastAccessedFiles(2);
+
+        $this->assertFileExists($filePaths['bar']);
+        $this->assertFileDoesNotExist($filePaths['foo']);
+        $this->assertFileDoesNotExist($filePaths['baz']);
+    }
 }
