@@ -38,7 +38,7 @@ php /path/to/matomo/console device-detector-cache:warm-cache -vvv
 
 It should show how many user agents were detected and should print the top 10 most commonly found user agents if things are configured correctly. 
 
-Cached files will be stored in `/tmp/devicecache/`. Make sure there is write access for this folder, both for the user running this command and for the user processing tracking requests (usually the web server user). Running the command as the web server user is recommended. When more than `num_cache_entries` cache files exist, the command deletes the least recently used entries. Each cache hit during tracking updates the file's access time (at most once a day), so this requires tracking requests to be able to write to the cache files.
+Cached files will be stored in `/tmp/devicecache/`. Both this command and the web server need write access to this folder. When more than `num_cache_entries` entries exist, the least recently used ones are deleted.
 
 #### Set up a cronjob
 
