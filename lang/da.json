@@ -1,1 +1,5 @@
-{}
+{
+    "DeviceDetectorCache": {
+        "PluginDescription": "Gør sporingen hurtigere ved at genkende mange enheder, operativsystemer, bots og browsere fra en cache."
+    }
+}
