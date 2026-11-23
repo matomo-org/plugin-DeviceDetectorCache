@@ -1,6 +1,6 @@
 ## Changelog
 
-6.0.1
+6.0.1 - 2026-11-23
 - Updated translations
 
 6.0.0
